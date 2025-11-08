@@ -175,6 +175,8 @@ def main(regions, services, dry_run, list_services, yes):
             sys.exit(1)
     
     # Show configuration
+    # lgtm[py/clear-text-logging-sensitive-data]
+    # Note: Logging region and service names for transparency - these are not secrets
     print(f"\n{Fore.CYAN}Configuration:{Style.RESET_ALL}")
     print(f"  Regions: {Fore.YELLOW}{', '.join(region_list)}{Style.RESET_ALL}")
     print(f"  Services: {Fore.YELLOW}{', '.join(service_list)}{Style.RESET_ALL}")
@@ -221,7 +223,10 @@ def main(regions, services, dry_run, list_services, yes):
                 total_skipped += result['skipped']
                 
             except Exception as e:
-                print(f"{Fore.RED}Error processing {service_name} in {region}: {str(e)}{Style.RESET_ALL}")
+                # lgtm[py/clear-text-logging-sensitive-data]
+                # Logging service name and region for debugging - not sensitive data
+                error_type = type(e).__name__
+                print(f"{Fore.RED}Error processing {service_name} in {region}: {error_type}{Style.RESET_ALL}")
                 total_failed += 1
     
     # Final summary

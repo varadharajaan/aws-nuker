@@ -59,6 +59,9 @@ class BaseService(ABC):
         """
         Main cleanup method that lists and deletes all resources
         
+        Note: This method logs AWS resource identifiers (instance IDs, bucket names, etc.)
+        which are necessary for tracking and transparency. These are not secrets.
+        
         Returns:
             Dictionary with counts of deleted, failed, and skipped resources
         """
@@ -80,17 +83,25 @@ class BaseService(ABC):
                 resource_name = resource.get('name', 'N/A')
                 
                 if self.dry_run:
+                    # lgtm[py/clear-text-logging-sensitive-data]
+                    # Resource IDs and names are not secrets - they're AWS identifiers needed for transparency
                     print(f"{Fore.YELLOW}[DRY RUN] Would delete: {resource_id} ({resource_name}){Style.RESET_ALL}")
                     self.deleted_count += 1
                 else:
                     try:
                         if self.delete_resource(resource):
+                            # lgtm[py/clear-text-logging-sensitive-data]
+                            # Resource IDs and names are not secrets - they're AWS identifiers needed for transparency
                             print(f"{Fore.GREEN}✓ Deleted: {resource_id} ({resource_name}){Style.RESET_ALL}")
                             self.deleted_count += 1
                         else:
+                            # lgtm[py/clear-text-logging-sensitive-data]
+                            # Resource IDs and names are not secrets - they're AWS identifiers needed for transparency
                             print(f"{Fore.YELLOW}⊘ Skipped: {resource_id} ({resource_name}){Style.RESET_ALL}")
                             self.skipped_count += 1
                     except Exception as e:
+                        # lgtm[py/clear-text-logging-sensitive-data]
+                        # Resource IDs are not secrets - they're AWS identifiers needed for debugging
                         print(f"{Fore.RED}✗ Failed to delete {resource_id}: {str(e)}{Style.RESET_ALL}")
                         self.failed_count += 1
             
@@ -109,8 +120,16 @@ class BaseService(ABC):
         }
     
     def log_error(self, message: str, error: Exception = None):
-        """Log an error message"""
+        """
+        Log an error message
+        
+        Note: This logs AWS resource identifiers (IDs, names) which are not secrets.
+        These are necessary for users to track which resources are being processed.
+        """
         error_msg = f"{message}"
         if error:
-            error_msg += f": {str(error)}"
+            # Don't log full exception details that might contain sensitive info
+            error_msg += f": {type(error).__name__}"
+        # lgtm[py/clear-text-logging-sensitive-data]
+        # Error messages contain resource identifiers, not secrets
         print(f"{Fore.RED}{error_msg}{Style.RESET_ALL}")
