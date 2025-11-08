@@ -5,7 +5,7 @@ Provides common functionality for listing and deleting AWS resources.
 """
 
 from abc import ABC, abstractmethod
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any
 import time
 import boto3
 from botocore.exceptions import ClientError
@@ -81,7 +81,7 @@ class ResourceHandler(ABC):
             Dictionary with deletion statistics
         """
         start_time = time.time()
-        
+
         stats = {
             "service": self.service_name,
             "region": self.region,
@@ -106,7 +106,7 @@ class ResourceHandler(ABC):
 
             for resource in resources:
                 resource_id = resource.get("id", "unknown")
-                
+
                 # Skip default resources unless forced
                 if self.is_default_resource(resource) and not self.force:
                     self.logger.debug(
@@ -184,23 +184,23 @@ class ResourceHandler(ABC):
             True if deletion succeeded, False otherwise
         """
         resource_id = resource.get("id", "unknown")
-        
+
         for attempt in range(max_retries):
             try:
                 success = self.delete_resource(resource)
                 if success:
                     return True
-                
+
                 # If delete_resource returns False, log and continue
                 if attempt < max_retries - 1:
                     self.logger.debug(
                         f"Retry {attempt + 1}/{max_retries} for {resource_id}"
                     )
                     time.sleep(2 ** attempt)  # Exponential backoff
-                    
+
             except ClientError as e:
                 error_code = e.response.get("Error", {}).get("Code", "Unknown")
-                
+
                 # Handle dependency violations with retry if force is enabled
                 if error_code in ["DependencyViolation", "ResourceInUseException"]:
                     if self.force and attempt < max_retries - 1:
@@ -235,7 +235,7 @@ class ResourceHandler(ABC):
                         details=str(e),
                     )
                     return False
-                    
+
             except Exception as e:
                 self.logger.error(
                     f"Unexpected error deleting {resource_id}: {str(e)}"

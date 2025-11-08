@@ -5,7 +5,7 @@ import click
 from colorama import init, Fore, Style
 from tabulate import tabulate
 
-from .config import NukerConfig, ALL_AWS_REGIONS, ALL_AWS_SERVICES
+from .config import NukerConfig, ALL_AWS_REGIONS
 from .orchestrator import AWSNuker
 from .logger import get_logger
 from .registry import get_available_services
@@ -30,13 +30,20 @@ def cli():
     "--regions",
     "-r",
     default="us-east-1",
-    help="AWS regions (single, comma-separated, range, or wildcard). Examples: 'us-east-1', 'us-east-1,us-west-2', 'us-*', or '*' for all regions.",
+    help=(
+        "AWS regions (single, comma-separated, range, or wildcard). "
+        "Examples: 'us-east-1', 'us-east-1,us-west-2', 'us-*', "
+        "or '*' for all regions."
+    ),
 )
 @click.option(
     "--services",
     "-s",
     default="*",
-    help="AWS services to target (comma-separated or wildcard). Examples: 'ec2,s3,rds' or '*' for all services.",
+    help=(
+        "AWS services to target (comma-separated or wildcard). "
+        "Examples: 'ec2,s3,rds' or '*' for all services."
+    ),
 )
 @click.option(
     "--dry-run",
@@ -118,8 +125,14 @@ def nuke(regions, services, dry_run, force, parallel, max_workers, yes):
         print(f"  {', '.join(service_list[i:i+5])}")
 
     print(f"\n{Fore.CYAN}Options:{Style.RESET_ALL}")
-    print(f"  Dry Run: {Fore.GREEN if dry_run else Fore.RED}{dry_run}{Style.RESET_ALL}")
-    print(f"  Force: {Fore.RED if force else Fore.GREEN}{force}{Style.RESET_ALL}")
+    print(
+        f"  Dry Run: {Fore.GREEN if dry_run else Fore.RED}"
+        f"{dry_run}{Style.RESET_ALL}"
+    )
+    print(
+        f"  Force: {Fore.RED if force else Fore.GREEN}"
+        f"{force}{Style.RESET_ALL}"
+    )
     print(f"  Parallel: {parallel}")
     if parallel:
         print(f"  Max Workers: {max_workers}")
@@ -164,10 +177,16 @@ def nuke(regions, services, dry_run, force, parallel, max_workers, yes):
         print(tabulate(summary_data, tablefmt="grid"))
 
         if summary["errors"]:
-            print(f"\n{Fore.RED}Errors encountered: {len(summary['errors'])}{Style.RESET_ALL}")
+            print(
+                f"\n{Fore.RED}Errors encountered: "
+                f"{len(summary['errors'])}{Style.RESET_ALL}"
+            )
 
         if summary["dry_run"]:
-            print(f"\n{Fore.YELLOW}NOTE: This was a DRY RUN - no actual deletions occurred{Style.RESET_ALL}")
+            print(
+                f"\n{Fore.YELLOW}NOTE: This was a DRY RUN - "
+                f"no actual deletions occurred{Style.RESET_ALL}"
+            )
 
         # Display log locations
         print(f"\n{Fore.CYAN}Log Files:{Style.RESET_ALL}")

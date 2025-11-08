@@ -22,12 +22,12 @@ class S3Handler(ResourceHandler):
             response = s3.list_buckets()
             for bucket in response.get("Buckets", []):
                 bucket_name = bucket["Name"]
-                
+
                 # Check if bucket is in the current region
                 try:
                     location = s3.get_bucket_location(Bucket=bucket_name)
                     bucket_region = location.get("LocationConstraint") or "us-east-1"
-                    
+
                     # Normalize region (us-east-1 returns None in LocationConstraint)
                     if bucket_region == self.region or (
                         self.region == "us-east-1" and bucket_region is None
@@ -67,7 +67,7 @@ class S3Handler(ResourceHandler):
     def _empty_bucket(self, bucket_name: str):
         """
         Empty all objects and versions from a bucket.
-        
+
         Args:
             bucket_name: Name of the bucket to empty
         """
@@ -77,7 +77,7 @@ class S3Handler(ResourceHandler):
         try:
             # Check if versioning is enabled
             versioning = s3.BucketVersioning(bucket_name)
-            
+
             if versioning.status == "Enabled":
                 # Delete all object versions
                 bucket.object_versions.all().delete()

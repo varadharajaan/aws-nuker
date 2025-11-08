@@ -46,7 +46,7 @@ class Route53Handler(ResourceHandler):
         try:
             # Delete all record sets except NS and SOA
             self._delete_record_sets(route53, zone_id)
-            
+
             # Delete the hosted zone
             route53.delete_hosted_zone(Id=zone_id)
             return True

@@ -5,19 +5,18 @@ Handles region selection, resource filtering, and other configuration options.
 """
 
 from dataclasses import dataclass, field
-from typing import List, Set, Optional
-import re
+from typing import List, Set
 
 
 # Comprehensive list of AWS regions
 ALL_AWS_REGIONS = [
     "us-east-1", "us-east-2", "us-west-1", "us-west-2",
     "af-south-1",
-    "ap-east-1", "ap-south-1", "ap-south-2", "ap-southeast-1", 
-    "ap-southeast-2", "ap-southeast-3", "ap-northeast-1", 
+    "ap-east-1", "ap-south-1", "ap-south-2", "ap-southeast-1",
+    "ap-southeast-2", "ap-southeast-3", "ap-northeast-1",
     "ap-northeast-2", "ap-northeast-3",
     "ca-central-1",
-    "eu-central-1", "eu-central-2", "eu-west-1", "eu-west-2", 
+    "eu-central-1", "eu-central-2", "eu-west-1", "eu-west-2",
     "eu-west-3", "eu-south-1", "eu-south-2", "eu-north-1",
     "me-south-1", "me-central-1",
     "sa-east-1",
@@ -25,9 +24,9 @@ ALL_AWS_REGIONS = [
 
 # Comprehensive list of AWS services (A-Z)
 ALL_AWS_SERVICES = [
-    "acm",              # AWS Certificate Manager
-    "apigateway",       # API Gateway
-    "apigatewayv2",     # API Gateway V2
+    "acm",               # AWS Certificate Manager
+    "apigateway",        # API Gateway
+    "apigatewayv2",      # API Gateway V2
     "appstream",        # AppStream
     "athena",           # Athena
     "autoscaling",      # Auto Scaling
@@ -48,7 +47,7 @@ ALL_AWS_SERVICES = [
     "efs",              # Elastic File System
     "eks",              # Elastic Kubernetes Service
     "elasticache",      # ElastiCache
-    "elasticbeanstalk", # Elastic Beanstalk
+    "elasticbeanstalk",  # Elastic Beanstalk
     "elbv2",            # Elastic Load Balancing v2
     "elb",              # Elastic Load Balancing
     "emr",              # Elastic MapReduce
@@ -144,11 +143,11 @@ class NukerConfig:
             if len(parts) == 2:
                 start_region = parts[0].strip()
                 end_region = parts[1].strip()
-                
+
                 try:
                     start_idx = ALL_AWS_REGIONS.index(start_region)
                     end_idx = ALL_AWS_REGIONS.index(end_region)
-                    
+
                     if start_idx <= end_idx:
                         return ALL_AWS_REGIONS[start_idx:end_idx + 1]
                     else:
@@ -159,7 +158,7 @@ class NukerConfig:
 
         # Handle comma-separated regions
         regions = [r.strip() for r in region_input.split(",")]
-        
+
         # Validate regions
         valid_regions = []
         for region in regions:
@@ -204,7 +203,7 @@ class NukerConfig:
 
         # Handle comma-separated services
         services = [s.strip().lower() for s in service_input.split(",")]
-        
+
         # Validate services
         valid_services = set()
         for service in services:

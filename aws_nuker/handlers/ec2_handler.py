@@ -151,7 +151,8 @@ class EC2Handler(ResourceHandler):
     def is_default_resource(self, resource: Dict[str, Any]) -> bool:
         """Check if resource is a default resource."""
         # Default security groups should be preserved
-        if resource.get("type") == "security_group" and resource.get("name") == "default":
+        if (resource.get("type") == "security_group" and
+                resource.get("name") == "default"):
             return True
         return False
 

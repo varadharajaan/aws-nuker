@@ -6,7 +6,7 @@ from typing import Dict, List, Any
 
 from .config import NukerConfig
 from .logger import get_logger
-from .registry import get_handler, get_available_services
+from .registry import get_handler
 
 
 class AWSNuker:
