@@ -19,38 +19,52 @@ from .services.additional import (
     DynamoDBService, SNSService, SQSService, APIGatewayService, APIGatewayV2Service,
     ElastiCacheService, CloudWatchLogsService, Route53Service
 )
+from .services.extended import (
+    ELBService, ELBv2Service, AutoScalingGroupService, LaunchTemplateService,
+    SecretsManagerService, CloudWatchAlarmsService, ECRService, KinesisStreamService,
+    BackupVaultService
+)
 
 # Initialize colorama
 init(autoreset=True)
 
 # All available services in alphabetical order
 ALL_SERVICES = {
+    'alb-nlb': ELBv2Service,
     'ami': AMIService,
     'apigateway': APIGatewayService,
     'apigatewayv2': APIGatewayV2Service,
+    'autoscaling': AutoScalingGroupService,
+    'backup-vaults': BackupVaultService,
     'cloudformation': CloudFormationService,
+    'cloudwatch-alarms': CloudWatchAlarmsService,
     'cloudwatch-logs': CloudWatchLogsService,
     'dynamodb': DynamoDBService,
     'ebs': EBSService,
     'ebs-snapshots': EBSSnapshotService,
     'ec2': EC2Service,
+    'ecr': ECRService,
     'ecs-clusters': ECSClusterService,
     'ecs-tasks': ECSTaskDefinitionService,
     'eks': EKSClusterService,
     'elasticache': ElastiCacheService,
     'elastic-ips': ElasticIPService,
+    'elb': ELBService,
     'iam-groups': IAMGroupService,
     'iam-policies': IAMPolicyService,
     'iam-roles': IAMRoleService,
     'iam-users': IAMUserService,
     'key-pairs': KeyPairService,
+    'kinesis': KinesisStreamService,
     'lambda': LambdaService,
     'lambda-layers': LambdaLayerService,
+    'launch-templates': LaunchTemplateService,
     'rds-clusters': RDSClusterService,
     'rds-instances': RDSInstanceService,
     'rds-snapshots': RDSSnapshotService,
     'route53': Route53Service,
     's3': S3Service,
+    'secrets-manager': SecretsManagerService,
     'security-groups': SecurityGroupService,
     'sns': SNSService,
     'sqs': SQSService,

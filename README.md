@@ -24,7 +24,7 @@ This tool is **EXTREMELY DANGEROUS** and will **PERMANENTLY DELETE** AWS resourc
 
 ## Supported AWS Services
 
-The tool supports the following AWS services:
+The tool supports the following AWS services (40+ services):
 
 ### Compute
 - **EC2** - Instances
@@ -35,11 +35,15 @@ The tool supports the following AWS services:
 - **Key Pairs**
 - **Lambda** - Functions
 - **Lambda Layers**
+- **Auto Scaling Groups**
+- **Launch Templates**
 
-### Networking
+### Networking & Load Balancing
 - **VPCs** (non-default)
 - **Subnets** (non-default)
 - **Security Groups** (non-default)
+- **ELB** - Classic Load Balancers
+- **ALB/NLB** - Application/Network Load Balancers
 
 ### Storage
 - **S3** - Buckets (with force empty)
@@ -51,27 +55,32 @@ The tool supports the following AWS services:
 - **DynamoDB** - Tables
 - **ElastiCache** - Clusters
 
-### Containers
+### Containers & Registries
 - **ECS** - Clusters
 - **ECS** - Task Definitions
 - **EKS** - Clusters
+- **ECR** - Container Registries
 
 ### Application Services
 - **API Gateway** - REST APIs
 - **API Gateway V2** - HTTP/WebSocket APIs
 - **SNS** - Topics
 - **SQS** - Queues
+- **Kinesis** - Streams
 
 ### Management & Governance
 - **CloudFormation** - Stacks
 - **CloudWatch** - Log Groups
+- **CloudWatch** - Alarms
 - **Route53** - Hosted Zones
+- **AWS Backup** - Backup Vaults
 
 ### Security & Identity
 - **IAM** - Users
 - **IAM** - Roles
 - **IAM** - Policies (customer managed)
 - **IAM** - Groups
+- **Secrets Manager** - Secrets
 
 ## Installation
 
