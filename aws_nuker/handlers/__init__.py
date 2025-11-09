@@ -15,6 +15,16 @@ from .apigateway_handler import APIGatewayHandler
 from .elb_handler import ELBHandler
 from .route53_handler import Route53Handler
 from .vpc_handler import VPCHandler
+from .ecr_handler import ECRHandler
+from .eks_handler import EKSHandler
+from .kinesis_handler import KinesisHandler
+from .athena_handler import AthenaHandler
+from .glue_handler import GlueHandler
+from .redshift_handler import RedshiftHandler
+from .elasticache_handler import ElastiCacheHandler
+from .kms_handler import KMSHandler
+from .secretsmanager_handler import SecretsManagerHandler
+from .guardduty_handler import GuardDutyHandler
 
 __all__ = [
     "EC2Handler",
@@ -32,4 +42,14 @@ __all__ = [
     "ELBHandler",
     "Route53Handler",
     "VPCHandler",
+    "ECRHandler",
+    "EKSHandler",
+    "KinesisHandler",
+    "AthenaHandler",
+    "GlueHandler",
+    "RedshiftHandler",
+    "ElastiCacheHandler",
+    "KMSHandler",
+    "SecretsManagerHandler",
+    "GuardDutyHandler",
 ]

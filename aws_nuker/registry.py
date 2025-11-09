@@ -18,6 +18,16 @@ from .handlers import (
     ELBHandler,
     Route53Handler,
     VPCHandler,
+    ECRHandler,
+    EKSHandler,
+    KinesisHandler,
+    AthenaHandler,
+    GlueHandler,
+    RedshiftHandler,
+    ElastiCacheHandler,
+    KMSHandler,
+    SecretsManagerHandler,
+    GuardDutyHandler,
 )
 
 
@@ -41,6 +51,16 @@ HANDLER_REGISTRY: Dict[str, Type[ResourceHandler]] = {
     "elbv2": ELBHandler,  # ELBv2 uses same handler
     "route53": Route53Handler,
     "vpc": VPCHandler,
+    "ecr": ECRHandler,
+    "eks": EKSHandler,
+    "kinesis": KinesisHandler,
+    "athena": AthenaHandler,
+    "glue": GlueHandler,
+    "redshift": RedshiftHandler,
+    "elasticache": ElastiCacheHandler,
+    "kms": KMSHandler,
+    "secretsmanager": SecretsManagerHandler,
+    "guardduty": GuardDutyHandler,
 }
 
 

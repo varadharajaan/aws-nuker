@@ -22,67 +22,131 @@ ALL_AWS_REGIONS = [
     "sa-east-1",
 ]
 
-# Comprehensive list of AWS services (A-Z)
+# Comprehensive list of AWS services (A-Z) - Expanded to 100+ services
 ALL_AWS_SERVICES = [
-    "acm",               # AWS Certificate Manager
-    "apigateway",        # API Gateway
-    "apigatewayv2",      # API Gateway V2
-    "appstream",        # AppStream
-    "athena",           # Athena
-    "autoscaling",      # Auto Scaling
-    "backup",           # AWS Backup
-    "batch",            # AWS Batch
-    "cloudformation",   # CloudFormation
-    "cloudfront",       # CloudFront
-    "cloudtrail",       # CloudTrail
-    "cloudwatch",       # CloudWatch
-    "codecommit",       # CodeCommit
-    "codepipeline",     # CodePipeline
-    "cognito",          # Cognito
-    "config",           # AWS Config
-    "dynamodb",         # DynamoDB
-    "ec2",              # EC2
-    "ecr",              # Elastic Container Registry
-    "ecs",              # Elastic Container Service
-    "efs",              # Elastic File System
-    "eks",              # Elastic Kubernetes Service
-    "elasticache",      # ElastiCache
-    "elasticbeanstalk",  # Elastic Beanstalk
-    "elbv2",            # Elastic Load Balancing v2
-    "elb",              # Elastic Load Balancing
-    "emr",              # Elastic MapReduce
-    "eventbridge",      # EventBridge
-    "firehose",         # Kinesis Firehose
-    "fsx",              # FSx
-    "glacier",          # Glacier
-    "glue",             # AWS Glue
-    "guardduty",        # GuardDuty
-    "iam",              # Identity and Access Management
-    "kinesis",          # Kinesis
-    "kms",              # Key Management Service
-    "lambda",           # Lambda
-    "logs",             # CloudWatch Logs
-    "mq",               # Amazon MQ
-    "neptune",          # Neptune
-    "opensearch",       # OpenSearch
-    "organizations",    # AWS Organizations
-    "rds",              # Relational Database Service
-    "redshift",         # Redshift
-    "route53",          # Route 53
-    "s3",               # Simple Storage Service
-    "sagemaker",        # SageMaker
-    "secretsmanager",   # Secrets Manager
-    "servicecatalog",   # Service Catalog
-    "ses",              # Simple Email Service
-    "sns",              # Simple Notification Service
-    "sqs",              # Simple Queue Service
-    "ssm",              # Systems Manager
-    "stepfunctions",    # Step Functions
-    "sts",              # Security Token Service
-    "transfer",         # AWS Transfer Family
-    "waf",              # Web Application Firewall
-    "wafv2",            # Web Application Firewall v2
-    "workspaces",       # WorkSpaces
+    "acm",                   # AWS Certificate Manager
+    "apigateway",            # API Gateway
+    "apigatewayv2",          # API Gateway V2
+    "appflow",               # Amazon AppFlow
+    "appmesh",               # AWS App Mesh
+    "apprunner",             # AWS App Runner
+    "appstream",             # Amazon AppStream 2.0
+    "athena",                # Amazon Athena
+    "autoscaling",           # AWS Auto Scaling
+    "backup",                # AWS Backup
+    "batch",                 # AWS Batch
+    "chime",                 # Amazon Chime
+    "cloud9",                # AWS Cloud9
+    "cloudformation",        # AWS CloudFormation
+    "cloudfront",            # Amazon CloudFront
+    "cloudhsm",              # AWS CloudHSM
+    "cloudmap",              # AWS Cloud Map
+    "cloudsearch",           # Amazon CloudSearch
+    "cloudtrail",            # AWS CloudTrail
+    "cloudwatch",            # Amazon CloudWatch
+    "codeartifact",          # AWS CodeArtifact
+    "codebuild",             # AWS CodeBuild
+    "codecommit",            # AWS CodeCommit
+    "codedeploy",            # AWS CodeDeploy
+    "codepipeline",          # AWS CodePipeline
+    "cognito",               # Amazon Cognito
+    "comprehend",            # Amazon Comprehend
+    "config",                # AWS Config
+    "connect",               # Amazon Connect
+    "datasync",              # AWS DataSync
+    "detective",             # Amazon Detective
+    "directconnect",         # AWS Direct Connect
+    "dms",                   # AWS Database Migration Service
+    "docdb",                 # Amazon DocumentDB
+    "dynamodb",              # Amazon DynamoDB
+    "ec2",                   # Amazon EC2
+    "ecr",                   # Amazon Elastic Container Registry
+    "ecs",                   # Amazon Elastic Container Service
+    "efs",                   # Amazon Elastic File System
+    "eks",                   # Amazon Elastic Kubernetes Service
+    "elasticache",           # Amazon ElastiCache
+    "elasticbeanstalk",      # AWS Elastic Beanstalk
+    "elastictranscoder",     # Amazon Elastic Transcoder
+    "elb",                   # Elastic Load Balancing (Classic)
+    "elbv2",                 # Elastic Load Balancing v2 (ALB/NLB)
+    "emr",                   # Amazon EMR (Elastic MapReduce)
+    "eventbridge",           # Amazon EventBridge
+    "firehose",              # Amazon Data Firehose (Kinesis Firehose)
+    "fms",                   # AWS Firewall Manager
+    "forecast",              # Amazon Forecast
+    "frauddetector",         # Amazon Fraud Detector
+    "fsx",                   # Amazon FSx
+    "glacier",               # Amazon S3 Glacier
+    "globalaccelerator",     # AWS Global Accelerator
+    "glue",                  # AWS Glue
+    "guardduty",             # Amazon GuardDuty
+    "iam",                   # AWS Identity and Access Management
+    "imagebuilder",          # EC2 Image Builder
+    "inspector",             # Amazon Inspector
+    "iot",                   # AWS IoT Core
+    "iotanalytics",          # AWS IoT Analytics
+    "iotevents",             # AWS IoT Events
+    "iotsitewise",           # AWS IoT SiteWise
+    "ivs",                   # Amazon Interactive Video Service
+    "kafka",                 # Amazon MSK (Managed Streaming for Apache Kafka)
+    "kendra",                # Amazon Kendra
+    "keyspaces",             # Amazon Keyspaces (for Apache Cassandra)
+    "kinesis",               # Amazon Kinesis
+    "kms",                   # AWS Key Management Service
+    "lakeformation",         # AWS Lake Formation
+    "lambda",                # AWS Lambda
+    "lightsail",             # Amazon Lightsail
+    "logs",                  # Amazon CloudWatch Logs
+    "macie",                 # Amazon Macie
+    "mediaconvert",          # AWS Elemental MediaConvert
+    "medialive",             # AWS Elemental MediaLive
+    "mediapackage",          # AWS Elemental MediaPackage
+    "mediastore",            # AWS Elemental MediaStore
+    "mediatailor",           # AWS Elemental MediaTailor
+    "memorydb",              # Amazon MemoryDB for Redis
+    "mq",                    # Amazon MQ
+    "neptune",               # Amazon Neptune
+    "opensearch",            # Amazon OpenSearch Service
+    "opsworks",              # AWS OpsWorks
+    "organizations",         # AWS Organizations
+    "outposts",              # AWS Outposts
+    "personalize",           # Amazon Personalize
+    "pinpoint",              # Amazon Pinpoint
+    "polly",                 # Amazon Polly
+    "qldb",                  # Amazon QLDB
+    "quicksight",            # Amazon QuickSight
+    "ram",                   # AWS Resource Access Manager
+    "rds",                   # Amazon Relational Database Service
+    "redshift",              # Amazon Redshift
+    "rekognition",           # Amazon Rekognition
+    "route53",               # Amazon Route 53
+    "s3",                    # Amazon Simple Storage Service
+    "sagemaker",             # Amazon SageMaker
+    "secretsmanager",        # AWS Secrets Manager
+    "securityhub",           # AWS Security Hub
+    "serverlessrepo",        # AWS Serverless Application Repository
+    "servicecatalog",        # AWS Service Catalog
+    "ses",                   # Amazon Simple Email Service
+    "shield",                # AWS Shield
+    "signer",                # AWS Signer
+    "sns",                   # Amazon Simple Notification Service
+    "sqs",                   # Amazon Simple Queue Service
+    "ssm",                   # AWS Systems Manager
+    "stepfunctions",         # AWS Step Functions
+    "storagegateway",        # AWS Storage Gateway
+    "sts",                   # AWS Security Token Service
+    "swf",                   # Amazon Simple Workflow Service
+    "textract",              # Amazon Textract
+    "timestream",            # Amazon Timestream
+    "transcribe",            # Amazon Transcribe
+    "transfer",              # AWS Transfer Family
+    "translate",             # Amazon Translate
+    "waf",                   # AWS WAF (Web Application Firewall)
+    "wafv2",                 # AWS WAF v2
+    "workdocs",              # Amazon WorkDocs
+    "workmail",              # Amazon WorkMail
+    "workspaces",            # Amazon WorkSpaces
+    "xray",                  # AWS X-Ray
 ]
 
 
