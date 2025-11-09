@@ -3,3 +3,9 @@ botocore>=1.31.0
 click>=8.1.0
 colorama>=0.4.6
 tabulate>=0.9.0
+
+# Web API Server
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+pydantic==2.5.0

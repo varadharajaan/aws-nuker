@@ -2,6 +2,8 @@
 
 **AWS Resource Cleanup and Destroyer Tool** - Ruthlessly delete all AWS resources without mercy!
 
+Multi-region resource cleanup tool with **67+ AWS services support**, **tag-based filtering**, and **web dashboard**.
+
 ## ⚠️ WARNING
 
 This tool is **EXTREMELY DANGEROUS** and will **PERMANENTLY DELETE** AWS resources. Use with caution!
@@ -15,12 +17,82 @@ This tool is **EXTREMELY DANGEROUS** and will **PERMANENTLY DELETE** AWS resourc
 
 ## Features
 
-✅ **Comprehensive Coverage** - Supports 67+ AWS services (A-Z)
-✅ **Multi-Region Support** - Clean resources across multiple regions or all regions
-✅ **Selective Cleanup** - Choose specific services to clean
-✅ **Dry Run Mode** - Preview what would be deleted before actual deletion
-✅ **Dependency Handling** - Forcefully deletes dependent resources
-✅ **Default Resource Protection** - Preserves AWS default resources (default VPC, etc.)
+✅ **Comprehensive Coverage** - Supports 67+ AWS services (A-Z)  
+✅ **Multi-Region Support** - Clean resources across multiple regions or all regions  
+✅ **Selective Cleanup** - Choose specific services to clean  
+✅ **Tag-Based Filtering** - Filter resources by tags with wildcard patterns  
+✅ **Web Dashboard** - React + TypeScript UI with visualizations and charts  
+✅ **REST API** - FastAPI backend for programmatic access  
+✅ **Dry Run Mode** - Preview what would be deleted before actual deletion  
+✅ **Dependency Handling** - Forcefully deletes dependent resources  
+✅ **Default Resource Protection** - Preserves AWS default resources (default VPC, etc.)  
+
+## Quick Start
+
+### CLI Mode
+```bash
+# Install
+git clone https://github.com/varadharajaan/aws-nuker.git
+cd aws-nuker
+pip install -r requirements.txt
+pip install -e .
+
+# Configure AWS credentials
+aws configure
+
+# Dry run to preview deletion
+aws-nuker --regions us-east-1 --services ec2-instances --tags "env=dev" --dry-run
+
+# Execute deletion
+aws-nuker --regions us-east-1 --services ec2-instances --tags "env=dev" --yes
+```
+
+### Web UI Mode
+```bash
+# Start backend server
+python3 api_server.py
+
+# In another terminal, start frontend
+cd web
+npm install
+npm run dev
+
+# Open browser to http://localhost:3000
+```
+
+## Screenshots
+
+### Dashboard
+The main dashboard shows resource discovery with filters, charts, and detailed tables.
+
+### Dry Run & Delete
+Preview resources before deletion with safety confirmations and real-time results.
+
+### Reports
+View audit logs, cost savings, and cleanup history.
+
+## Interfaces
+
+### 1. Command Line Interface (CLI)
+Traditional terminal-based interface for automation and scripts.
+
+### 2. Web Dashboard (NEW!)
+Modern React + TypeScript web interface with:
+- **Interactive Filters** - Multi-select regions, services, and tag patterns
+- **Resource Discovery** - Real-time discovery with visualizations
+- **Dry Run Preview** - See exactly what will be deleted
+- **Safe Deletion** - Confirmation modals and progress tracking
+- **Charts & Analytics** - Resource distribution by service and region
+- **Reports** - Audit logs and cost savings tracking
+
+### 3. REST API
+FastAPI-powered backend for custom integrations:
+- `GET /api/services` - List supported services
+- `GET /api/regions` - List available regions  
+- `POST /api/discover` - Discover resources
+- `POST /api/dryrun` - Simulate deletion
+- `POST /api/delete` - Execute deletion
+- `GET /api/reports` - Fetch audit logs
 
 ## Supported AWS Services
 
@@ -105,21 +177,64 @@ The tool supports the following AWS services (67+ services):
 ## Installation
 
 ### Prerequisites
-- Python 3.7 or higher
+
+**For CLI:**
+- Python 3.9 or higher
 - AWS credentials configured (via AWS CLI, environment variables, or IAM role)
 
-### Install from source
+**For Web UI:**
+- Python 3.9+
+- Node.js 16+ and npm 8+
+- AWS credentials configured
+
+### Install CLI Only
 
 ```bash
 # Clone the repository
 git clone https://github.com/varadharajaan/aws-nuker.git
 cd aws-nuker
 
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
 # Install dependencies
 pip install -r requirements.txt
 
 # Install the package
 pip install -e .
+```
+
+### Install Full Stack (CLI + Web UI)
+
+```bash
+# Clone the repository
+git clone https://github.com/varadharajaan/aws-nuker.git
+cd aws-nuker
+
+# Backend setup
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+pip install -e .
+
+# Frontend setup
+cd web
+npm install
+cd ..
+```
+
+**Start the Web UI:**
+
+```bash
+# Terminal 1: Start backend API
+python3 api_server.py
+
+# Terminal 2: Start frontend
+cd web
+npm run dev
+
+# Open browser to http://localhost:3000
 ```
 
 ## Configuration
@@ -291,6 +406,139 @@ aws-nuker --regions us-east-1 --services rds-instances,rds-clusters,rds-snapshot
 aws-nuker --regions us-east-1 --services vpcs,subnets,security-groups
 ```
 
+### Web UI Usage
+
+#### Getting Started with Web Dashboard
+
+1. **Start the Services**
+   ```bash
+   # Terminal 1
+   python3 api_server.py
+   
+   # Terminal 2
+   cd web && npm run dev
+   ```
+
+2. **Access Dashboard**
+   - Open http://localhost:3000
+   - Navigate using the top menu
+
+#### Dashboard Page Workflow
+
+**Purpose:** Discover and visualize resources across your AWS account
+
+**Steps:**
+1. **Select Regions**
+   - Hold Ctrl/Cmd to select multiple regions
+   - Choose one or more regions to scan
+
+2. **Select Services**
+   - Browse by category (Compute, Storage, Database, etc.)
+   - Select specific services or choose multiple
+
+3. **Add Tag Filters (Optional)**
+   - Enter tag patterns: `env=dev,!protected`
+   - Use wildcards: `owner=john*`
+
+4. **Discover Resources**
+   - Click "Discover Resources" button
+   - View results in:
+     - **Stats Cards** - Total count, services, regions
+     - **Bar Chart** - Resources by service
+     - **Pie Chart** - Resources by region
+     - **Table** - Detailed resource list
+
+**Example Use Case:**
+```
+Scenario: Find all dev resources in us-east-1
+
+Filters:
+- Regions: us-east-1
+- Services: ec2-instances, s3, rds-instances
+- Tags: env=dev
+
+Result: Discovered 42 resources ready for cleanup
+```
+
+#### Dry Run & Delete Page Workflow
+
+**Purpose:** Safely preview and execute resource deletion
+
+**Steps:**
+1. **Configure Deletion**
+   - Filters are pre-filled from Dashboard
+   - Adjust regions, services, or tags if needed
+
+2. **Run Dry Run** (Required)
+   - Click "Run Dry Run" button
+   - Review the simulation results:
+     - Total resources to be deleted
+     - Services and regions affected
+     - Complete resource list with IDs
+
+3. **Review Carefully**
+   - Verify each resource in the table
+   - Check that no production resources are included
+   - Confirm resource count matches expectations
+
+4. **Execute Deletion**
+   - Click "Execute Deletion" button
+   - Read the warning modal carefully
+   - Confirm the deletion
+
+5. **Monitor Progress**
+   - View real-time deletion status
+   - Check success/failure counts
+   - Review any error messages
+
+6. **Verify Results**
+   - Return to Dashboard
+   - Run discovery again to confirm deletion
+
+**Safety Features:**
+- ⚠️ Red warning banner on page
+- 🔒 Dry run required before deletion enabled
+- ✅ Confirmation modal with resource count
+- 📊 Real-time status updates
+
+#### Reports Page
+
+**Purpose:** View audit logs and cost savings
+
+**Features:**
+- Cleanup history
+- Cost savings estimates
+- Recent activity log
+- Export to CSV/JSON (coming soon)
+
+**Current Status:** Basic reporting (full audit logs in development)
+
+#### Web UI vs CLI Comparison
+
+| Feature | Web UI | CLI |
+|---------|--------|-----|
+| Visual Discovery | ✅ Charts & graphs | ❌ Text only |
+| Resource Table | ✅ Sortable, filterable | ❌ List format |
+| Dry Run Preview | ✅ Interactive table | ✅ Text output |
+| Deletion Safety | ✅ Modal confirmation | ⚠️ Prompt only |
+| Multi-region View | ✅ Visual breakdown | ❌ Combined output |
+| Automation | ❌ Interactive only | ✅ Scriptable |
+| Remote Access | ✅ Browser-based | ❌ Server SSH needed |
+
+**When to use Web UI:**
+- Visual resource discovery
+- Team collaboration
+- Learning the tool
+- Complex filtering
+- Dry run review
+
+**When to use CLI:**
+- Automation scripts
+- CI/CD pipelines
+- Scheduled cleanups
+- SSH-only access
+- Fast execution
+
 ## How It Works
 
 1. **Resource Discovery**: Lists all resources for selected services in specified regions
@@ -364,6 +612,189 @@ aws-nuker/
 ├── setup.py
 └── README.md
 ```
+
+### Full Stack Structure
+
+```
+aws-nuker/
+├── api_server.py           # FastAPI backend server
+├── aws_nuker/              # Core Python package
+│   ├── cli.py             # CLI interface
+│   ├── utils.py           # Utilities & tag parsing
+│   └── services/          # Service implementations (67+)
+├── web/                    # React frontend
+│   ├── src/
+│   │   ├── App.tsx        # Main app component
+│   │   ├── pages/         # Dashboard, DryRun, Reports
+│   │   ├── components/    # Reusable UI components
+│   │   ├── utils/         # API client
+│   │   └── types/         # TypeScript definitions
+│   ├── package.json
+│   └── vite.config.ts
+└── docs/                   # Documentation
+    ├── ARCHITECTURE.md     # System architecture
+    ├── USE_CASES.md        # Use cases & workflows
+    └── INSTALLATION.md     # Setup guide
+```
+
+## Architecture
+
+### System Overview
+
+```
+┌────────────┐     ┌─────────────┐     ┌───────────┐     ┌─────────┐
+│  Web UI    │────►│  FastAPI    │────►│  AWS SDK  │────►│   AWS   │
+│  (React)   │     │  Backend    │     │  (boto3)  │     │  Cloud  │
+└────────────┘     └─────────────┘     └───────────┘     └─────────┘
+     │                     │
+     │ REST API            │ Python
+     │ (HTTP/JSON)         │ Service Classes
+     │                     │
+     └─────────────────────┘
+```
+
+### Components
+
+**Backend (Python)**
+- FastAPI REST API server
+- Service-based architecture with `BaseService` pattern
+- 67+ AWS service implementations
+- Tag filtering and validation
+- Dependency resolution
+
+**Frontend (React + TypeScript)**
+- Modern SPA with React 18
+- TailwindCSS for styling
+- React Query for state management
+- Recharts for data visualization
+- Responsive design
+
+**CLI (Python)**
+- Click-based command interface
+- Direct service class usage
+- Same backend logic as web UI
+- Scriptable and automatable
+
+## REST API Documentation
+
+Base URL: `http://localhost:8000`
+
+### Endpoints
+
+#### GET /
+Health check and API information
+```json
+{
+  "status": "healthy",
+  "service": "AWS Nuker API",
+  "version": "1.0.0"
+}
+```
+
+#### GET /api/services
+List all supported AWS services
+```json
+[
+  {
+    "name": "ec2-instances",
+    "display_name": "Ec2 Instances",
+    "category": "Compute & Containers",
+    "resource_types": ["ec2-instances"]
+  }
+]
+```
+
+#### GET /api/regions
+List all available AWS regions
+```json
+["us-east-1", "us-east-2", "us-west-1", ...]
+```
+
+#### POST /api/discover
+Discover AWS resources with filters
+```json
+Request:
+{
+  "regions": ["us-east-1", "us-west-2"],
+  "services": ["ec2-instances", "s3"],
+  "tags": "env=dev,!protected"  // optional
+}
+
+Response:
+{
+  "total_resources": 42,
+  "resources_by_service": {"ec2-instances": 25, "s3": 17},
+  "resources_by_region": {"us-east-1": 30, "us-west-2": 12},
+  "resources": [
+    {
+      "id": "i-1234567890abcdef0",
+      "type": "ec2-instances",
+      "region": "us-east-1",
+      "service": "ec2",
+      "name": "web-server",
+      "tags": {"env": "dev"},
+      "state": "running"
+    }
+  ],
+  "dependencies": []
+}
+```
+
+#### POST /api/dryrun
+Simulate resource deletion (same as /api/discover)
+
+#### POST /api/delete
+Execute resource deletion
+```json
+Request:
+{
+  "regions": ["us-east-1"],
+  "services": ["ec2-instances"],
+  "tags": "env=dev",
+  "confirm": true  // required
+}
+
+Response:
+{
+  "status": "completed",
+  "deleted_count": 25,
+  "failed_count": 0,
+  "results": [
+    {
+      "service": "ec2-instances",
+      "region": "us-east-1",
+      "status": "completed"
+    }
+  ]
+}
+```
+
+#### GET /api/reports
+Get audit logs and cleanup reports
+```json
+[]  // Returns array of report objects
+```
+
+### API Error Responses
+
+```json
+{
+  "detail": "Error message here"
+}
+```
+
+HTTP Status Codes:
+- 200: Success
+- 400: Bad request (invalid parameters)
+- 500: Server error (AWS API error, etc.)
+
+## Documentation
+
+Comprehensive documentation available in the `/docs` directory:
+
+- **[ARCHITECTURE.md](docs/ARCHITECTURE.md)** - System architecture, component diagrams, data flows
+- **[USE_CASES.md](docs/USE_CASES.md)** - Common scenarios, workflows, best practices
+- **[INSTALLATION.md](docs/INSTALLATION.md)** - Detailed setup guide, troubleshooting
 
 ## Contributing
 
