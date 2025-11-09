@@ -25,12 +25,14 @@ Output:
 ```
 Available AWS Services:
 
-  acm, apigateway, apigatewayv2, appstream, athena
-  autoscaling, backup, batch, cloudformation, cloudfront
-  cloudtrail, cloudwatch, codecommit, codepipeline, cognito
-  ...
+  apigateway, apigatewayv2, athena, cloudformation, cloudwatch
+  dynamodb, ec2, ecr, ecs, eks
+  elasticache, elb, elbv2, glue, guardduty
+  iam, kinesis, kms, lambda, logs
+  rds, redshift, route53, s3, secretsmanager
+  sns, sqs, vpc
 
-Total: 60+ services
+Total: 28 services
 ```
 
 ### List Available Regions
