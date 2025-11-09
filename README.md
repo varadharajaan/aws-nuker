@@ -210,11 +210,55 @@ aws-nuker --regions all --services all --yes
   - Multiple services: `ec2,s3,rds-instances`
   - All services: `all`
 
+- `--tags, -t` : Filter resources by tags (NEW!)
+  - Exact match: `env=dev`
+  - Wildcard prefix: `owner=john*`
+  - Wildcard suffix: `project=*test`
+  - Wildcard contains: `name=*temp*`
+  - Tag exists: `environment`
+  - Tag not exists: `!protected`
+  - Multiple filters (AND logic): `env=dev,owner=john*,!protected`
+
 - `--dry-run, -d` : Preview mode (no actual deletion)
 
 - `--list-services, -l` : Show all available services
 
 - `--yes, -y` : Skip confirmation prompt (use with caution!)
+
+### Tag Filtering Examples
+
+#### Filter by environment tag
+```bash
+# Delete all EC2 instances with env=dev tag
+aws-nuker --regions us-east-1 --services ec2 --tags "env=dev" --dry-run
+```
+
+#### Filter by multiple tags (AND logic)
+```bash
+# Delete resources that match ALL conditions
+aws-nuker --regions us-east-1 --services ec2,s3 --tags "env=dev,owner=john*"
+```
+
+#### Delete resources without protection tag
+```bash
+# Delete resources that don't have a 'protected' tag
+aws-nuker --regions us-east-1 --services ec2 --tags "!protected"
+```
+
+#### Complex tag filtering
+```bash
+# Delete dev resources owned by specific team, not protected
+aws-nuker --regions us-east-1 --services all --tags "env=dev,team=backend,!protected"
+```
+
+#### Wildcard pattern matching
+```bash
+# Delete all test/staging environments
+aws-nuker --regions us-east-1 --services ec2 --tags "env=*test*"
+
+# Delete resources owned by contractors
+aws-nuker --regions us-east-1 --services ec2 --tags "owner=contractor-*"
+```
 
 ### Examples
 

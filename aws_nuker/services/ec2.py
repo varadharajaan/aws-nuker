@@ -29,14 +29,16 @@ class EC2Service(BaseService):
                 for instance in reservation.get('Instances', []):
                     if instance['State']['Name'] not in ['terminated', 'terminating']:
                         name = 'N/A'
-                        for tag in instance.get('Tags', []):
+                        tags = instance.get('Tags', [])
+                        for tag in tags:
                             if tag['Key'] == 'Name':
                                 name = tag['Value']
                                 break
                         resources.append({
                             'id': instance['InstanceId'],
                             'name': name,
-                            'state': instance['State']['Name']
+                            'state': instance['State']['Name'],
+                            'tags': tags
                         })
         except Exception as e:
             self.log_error("Error listing EC2 instances", e)

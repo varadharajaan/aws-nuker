@@ -13,16 +13,18 @@ class BaseService(ABC):
     Base class for all AWS service cleanup implementations
     """
     
-    def __init__(self, region: str, dry_run: bool = False):
+    def __init__(self, region: str, dry_run: bool = False, tag_filters: List[str] = None):
         """
         Initialize the service
         
         Args:
             region: AWS region name
             dry_run: If True, only show what would be deleted without deleting
+            tag_filters: List of tag filter strings (e.g., ['env=dev', 'owner=*'])
         """
         self.region = region
         self.dry_run = dry_run
+        self.tag_filters = tag_filters or []
         self.deleted_count = 0
         self.failed_count = 0
         self.skipped_count = 0
@@ -67,6 +69,8 @@ class BaseService(ABC):
         """
         print(f"\n{Fore.CYAN}{'='*80}{Style.RESET_ALL}")
         print(f"{Fore.CYAN}Cleaning up {self.get_service_name()} in {self.region}{Style.RESET_ALL}")
+        if self.tag_filters:
+            print(f"{Fore.CYAN}Tag filters: {', '.join(self.tag_filters)}{Style.RESET_ALL}")
         print(f"{Fore.CYAN}{'='*80}{Style.RESET_ALL}\n")
         
         try:
@@ -76,7 +80,17 @@ class BaseService(ABC):
                 print(f"{Fore.YELLOW}No resources found for {self.get_service_name()}{Style.RESET_ALL}")
                 return {'deleted': 0, 'failed': 0, 'skipped': 0}
             
-            print(f"Found {len(resources)} resources\n")
+            # Filter resources by tags if filters are provided
+            if self.tag_filters:
+                filtered_resources = self.filter_resources_by_tags(resources)
+                print(f"Found {len(resources)} resources, {len(filtered_resources)} match tag filters\n")
+                resources = filtered_resources
+            else:
+                print(f"Found {len(resources)} resources\n")
+            
+            if not resources:
+                print(f"{Fore.YELLOW}No resources match the tag filters{Style.RESET_ALL}")
+                return {'deleted': 0, 'failed': 0, 'skipped': 0}
             
             for resource in resources:
                 resource_id = resource.get('id', 'unknown')
@@ -118,6 +132,31 @@ class BaseService(ABC):
             'failed': self.failed_count,
             'skipped': self.skipped_count
         }
+    
+    def filter_resources_by_tags(self, resources: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
+        """
+        Filter resources based on tag filters
+        
+        Args:
+            resources: List of resources
+            
+        Returns:
+            Filtered list of resources that match tag criteria
+        """
+        if not self.tag_filters:
+            return resources
+        
+        from ..utils import matches_tag_filters
+        
+        filtered = []
+        for resource in resources:
+            # Get tags from resource (different services may store tags differently)
+            tags = resource.get('tags', resource.get('Tags', []))
+            
+            if matches_tag_filters(tags, self.tag_filters):
+                filtered.append(resource)
+        
+        return filtered
     
     def log_error(self, message: str, error: Exception = None):
         """

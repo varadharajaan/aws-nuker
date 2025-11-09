@@ -167,7 +167,12 @@ def print_banner():
     is_flag=True,
     help='Skip confirmation prompt (DANGEROUS!)'
 )
-def main(regions, services, dry_run, list_services, yes):
+@click.option(
+    '--tags',
+    '-t',
+    help='Filter resources by tags (comma-separated, e.g., "env=dev,owner=*,!protected")'
+)
+def main(regions, services, dry_run, list_services, yes, tags):
     """
     AWS Nuker - Ruthlessly destroy AWS resources
     
@@ -184,6 +189,12 @@ def main(regions, services, dry_run, list_services, yes):
         
         # Delete all EC2 instances in us-east-1
         aws-nuker --regions us-east-1 --services ec2
+        
+        # Delete resources with specific tags
+        aws-nuker --regions us-east-1 --services ec2 --tags "env=dev,owner=john*"
+        
+        # Delete resources without a specific tag
+        aws-nuker --regions us-east-1 --services ec2 --tags "!protected"
         
         # Delete all resources in all regions (EXTREME CAUTION!)
         aws-nuker --regions all --services all
@@ -220,6 +231,11 @@ def main(regions, services, dry_run, list_services, yes):
             print(f"{Fore.YELLOW}Use --list-services to see all available services{Style.RESET_ALL}")
             sys.exit(1)
     
+    # Parse tag filters
+    tag_filters = []
+    if tags:
+        tag_filters = [t.strip() for t in tags.split(',')]
+    
     # Show configuration
     # lgtm[py/clear-text-logging-sensitive-data]
     # Note: Logging region and service names for transparency - these are not secrets
@@ -227,6 +243,8 @@ def main(regions, services, dry_run, list_services, yes):
     print(f"  Regions: {Fore.YELLOW}{', '.join(region_list)}{Style.RESET_ALL}")
     print(f"  Services: {Fore.YELLOW}{', '.join(service_list)}{Style.RESET_ALL}")
     print(f"  Dry Run: {Fore.YELLOW}{'Yes' if dry_run else 'No'}{Style.RESET_ALL}")
+    if tag_filters:
+        print(f"  Tag Filters: {Fore.YELLOW}{', '.join(tag_filters)}{Style.RESET_ALL}")
     
     # Confirmation prompt
     if not dry_run and not yes:
@@ -261,7 +279,7 @@ def main(regions, services, dry_run, list_services, yes):
             service_class = ALL_SERVICES[service_name]
             
             try:
-                service = service_class(region=region, dry_run=dry_run)
+                service = service_class(region=region, dry_run=dry_run, tag_filters=tag_filters)
                 result = service.cleanup()
                 
                 total_deleted += result['deleted']

@@ -121,3 +121,133 @@ def handle_dependencies(resource_type: str, resource_id: str, client, **kwargs):
     # This is a placeholder for dependency handling
     # Specific implementations will be in service classes
     pass
+
+
+def parse_tag_filter(tag_filter: str) -> Dict[str, Any]:
+    """
+    Parse tag filter string into structured format
+    
+    Supported formats:
+    - key=value (exact match)
+    - key=value* (prefix match)
+    - key=*value (suffix match)
+    - key=*value* (contains match)
+    - key (tag exists)
+    - !key (tag does not exist)
+    
+    Args:
+        tag_filter: Tag filter string
+        
+    Returns:
+        Dictionary with filter criteria
+    """
+    tag_filter = tag_filter.strip()
+    
+    # Check for negation (tag should NOT exist)
+    if tag_filter.startswith('!'):
+        return {
+            'key': tag_filter[1:],
+            'operator': 'not_exists'
+        }
+    
+    # Check if contains '=' (key-value pair)
+    if '=' in tag_filter:
+        key, value = tag_filter.split('=', 1)
+        key = key.strip()
+        value = value.strip()
+        
+        # Determine match type based on wildcards
+        if value.startswith('*') and value.endswith('*'):
+            # Contains match
+            return {
+                'key': key,
+                'value': value.strip('*'),
+                'operator': 'contains'
+            }
+        elif value.startswith('*'):
+            # Suffix match
+            return {
+                'key': key,
+                'value': value[1:],
+                'operator': 'suffix'
+            }
+        elif value.endswith('*'):
+            # Prefix match
+            return {
+                'key': key,
+                'value': value[:-1],
+                'operator': 'prefix'
+            }
+        else:
+            # Exact match
+            return {
+                'key': key,
+                'value': value,
+                'operator': 'exact'
+            }
+    else:
+        # Tag key exists (any value)
+        return {
+            'key': tag_filter,
+            'operator': 'exists'
+        }
+
+
+def matches_tag_filter(tags: List[Dict[str, str]], filter_criteria: Dict[str, Any]) -> bool:
+    """
+    Check if resource tags match the filter criteria
+    
+    Args:
+        tags: List of tag dictionaries with 'Key' and 'Value'
+        filter_criteria: Parsed filter criteria from parse_tag_filter
+        
+    Returns:
+        True if tags match the filter, False otherwise
+    """
+    key = filter_criteria['key']
+    operator = filter_criteria['operator']
+    
+    # Find tag with matching key
+    tag_value = None
+    for tag in tags:
+        if tag.get('Key') == key:
+            tag_value = tag.get('Value', '')
+            break
+    
+    # Apply operator
+    if operator == 'exists':
+        return tag_value is not None
+    elif operator == 'not_exists':
+        return tag_value is None
+    elif operator == 'exact':
+        return tag_value == filter_criteria['value']
+    elif operator == 'prefix':
+        return tag_value is not None and tag_value.startswith(filter_criteria['value'])
+    elif operator == 'suffix':
+        return tag_value is not None and tag_value.endswith(filter_criteria['value'])
+    elif operator == 'contains':
+        return tag_value is not None and filter_criteria['value'] in tag_value
+    
+    return False
+
+
+def matches_tag_filters(tags: List[Dict[str, str]], filters: List[str]) -> bool:
+    """
+    Check if resource tags match ALL provided filters (AND logic)
+    
+    Args:
+        tags: List of tag dictionaries with 'Key' and 'Value'
+        filters: List of tag filter strings
+        
+    Returns:
+        True if tags match all filters, False otherwise
+    """
+    if not filters:
+        return True  # No filters means match everything
+    
+    for filter_str in filters:
+        criteria = parse_tag_filter(filter_str)
+        if not matches_tag_filter(tags, criteria):
+            return False
+    
+    return True
