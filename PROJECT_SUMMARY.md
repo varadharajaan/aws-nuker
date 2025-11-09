@@ -2,11 +2,11 @@
 
 ## Overview
 
-AWS Nuker is a comprehensive AWS resource cleanup and destroyer tool that ruthlessly deletes AWS resources across 40+ services while preserving default AWS resources.
+AWS Nuker is a comprehensive AWS resource cleanup and destroyer tool that ruthlessly deletes AWS resources across 67+ services while preserving default AWS resources.
 
 ## Key Features
 
-### 1. Comprehensive Service Coverage (40+ Services)
+### 1. Comprehensive Service Coverage (67+ Services)
 
 #### Compute & Containers
 - EC2 Instances
@@ -17,6 +17,11 @@ AWS Nuker is a comprehensive AWS resource cleanup and destroyer tool that ruthle
 - Lambda Functions & Layers
 - Auto Scaling Groups
 - Launch Templates
+- Batch (Job Queues & Compute Environments)
+- Elastic Beanstalk Applications
+- App Runner Services
+- Lightsail Instances
+- Cloud9 Environments
 - ECS Clusters & Task Definitions
 - EKS Clusters
 - ECR Repositories
@@ -28,13 +33,25 @@ AWS Nuker is a comprehensive AWS resource cleanup and destroyer tool that ruthle
 - Classic Load Balancers (ELB)
 - Application/Network Load Balancers (ALB/NLB)
 
-#### Storage
+#### Storage & File Systems
 - S3 Buckets (with force empty)
+- EFS File Systems
+- FSx File Systems
+- Storage Gateway
+- S3 Glacier Vaults
 
 #### Databases
 - RDS Instances, Clusters & Snapshots
 - DynamoDB Tables
 - ElastiCache Clusters
+- Redshift Clusters
+
+#### Analytics
+- Athena Workgroups
+- EMR Clusters
+- Glue Databases & Crawlers
+- OpenSearch Domains
+- Data Pipelines
 
 #### Application Services
 - API Gateway (REST & HTTP/WebSocket)
@@ -47,6 +64,18 @@ AWS Nuker is a comprehensive AWS resource cleanup and destroyer tool that ruthle
 - CloudWatch Log Groups & Alarms
 - Route53 Hosted Zones
 - AWS Backup Vaults
+
+#### Developer Tools
+- CodeCommit Repositories
+- CodeBuild Projects
+- CodeDeploy Applications
+- CodePipeline Pipelines
+- CodeArtifact Repositories
+
+#### Machine Learning
+- SageMaker Notebooks, Endpoints & Models
+- Comprehend Entity Recognizers
+- Rekognition Collections
 
 #### Security & Identity
 - IAM Users, Roles, Policies & Groups
@@ -91,7 +120,12 @@ aws-nuker/
 │       ├── containers.py     # ECS/EKS services
 │       ├── cloudformation.py # CloudFormation service
 │       ├── additional.py     # Additional services
-│       └── extended.py       # Extended services
+│       ├── extended.py       # Extended services
+│       ├── analytics.py      # Analytics services (Athena, EMR, Glue, etc.)
+│       ├── ml.py             # Machine Learning services (SageMaker, etc.)
+│       ├── compute.py        # Additional Compute services (Batch, Beanstalk, etc.)
+│       ├── storage.py        # Storage services (EFS, FSx, Glacier, etc.)
+│       └── devtools.py       # Developer Tools (CodeCommit, CodeBuild, etc.)
 ├── requirements.txt          # Python dependencies
 ├── setup.py                  # Package setup
 ├── .gitignore               # Git ignore rules
