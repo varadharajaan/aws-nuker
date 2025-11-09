@@ -15,7 +15,7 @@ This tool is **EXTREMELY DANGEROUS** and will **PERMANENTLY DELETE** AWS resourc
 
 ## Features
 
-✅ **Comprehensive Coverage** - Supports 30+ AWS services (A-Z)
+✅ **Comprehensive Coverage** - Supports 67+ AWS services (A-Z)
 ✅ **Multi-Region Support** - Clean resources across multiple regions or all regions
 ✅ **Selective Cleanup** - Choose specific services to clean
 ✅ **Dry Run Mode** - Preview what would be deleted before actual deletion
@@ -24,9 +24,9 @@ This tool is **EXTREMELY DANGEROUS** and will **PERMANENTLY DELETE** AWS resourc
 
 ## Supported AWS Services
 
-The tool supports the following AWS services (40+ services):
+The tool supports the following AWS services (67+ services):
 
-### Compute
+### Compute & Containers
 - **EC2** - Instances
 - **EBS** - Volumes
 - **EBS Snapshots**
@@ -37,6 +37,13 @@ The tool supports the following AWS services (40+ services):
 - **Lambda Layers**
 - **Auto Scaling Groups**
 - **Launch Templates**
+- **Batch** - Job Queues & Compute Environments
+- **Elastic Beanstalk** - Applications
+- **App Runner** - Services
+- **Lightsail** - Instances
+- **ECS** - Clusters & Task Definitions
+- **EKS** - Clusters
+- **ECR** - Container Registries
 
 ### Networking & Load Balancing
 - **VPCs** (non-default)
@@ -45,21 +52,25 @@ The tool supports the following AWS services (40+ services):
 - **ELB** - Classic Load Balancers
 - **ALB/NLB** - Application/Network Load Balancers
 
-### Storage
+### Storage & File Systems
 - **S3** - Buckets (with force empty)
+- **EFS** - File Systems
+- **FSx** - File Systems
+- **Storage Gateway**
+- **S3 Glacier** - Vaults
 
 ### Database
-- **RDS Instances**
-- **RDS Clusters**
-- **RDS Snapshots**
+- **RDS** - Instances, Clusters & Snapshots
 - **DynamoDB** - Tables
 - **ElastiCache** - Clusters
+- **Redshift** - Clusters
 
-### Containers & Registries
-- **ECS** - Clusters
-- **ECS** - Task Definitions
-- **EKS** - Clusters
-- **ECR** - Container Registries
+### Analytics
+- **Athena** - Workgroups
+- **EMR** - Clusters
+- **Glue** - Databases & Crawlers
+- **OpenSearch** - Domains
+- **Data Pipeline** - Pipelines
 
 ### Application Services
 - **API Gateway** - REST APIs
@@ -70,16 +81,25 @@ The tool supports the following AWS services (40+ services):
 
 ### Management & Governance
 - **CloudFormation** - Stacks
-- **CloudWatch** - Log Groups
-- **CloudWatch** - Alarms
+- **CloudWatch** - Log Groups & Alarms
 - **Route53** - Hosted Zones
 - **AWS Backup** - Backup Vaults
 
+### Developer Tools
+- **CodeCommit** - Repositories
+- **CodeBuild** - Projects
+- **CodeDeploy** - Applications
+- **CodePipeline** - Pipelines
+- **CodeArtifact** - Repositories
+- **Cloud9** - Environments
+
+### Machine Learning
+- **SageMaker** - Notebooks, Endpoints, Models
+- **Comprehend** - Entity Recognizers
+- **Rekognition** - Collections
+
 ### Security & Identity
-- **IAM** - Users
-- **IAM** - Roles
-- **IAM** - Policies (customer managed)
-- **IAM** - Groups
+- **IAM** - Users, Roles, Policies, Groups
 - **Secrets Manager** - Secrets
 
 ## Installation

@@ -24,6 +24,25 @@ from .services.extended import (
     SecretsManagerService, CloudWatchAlarmsService, ECRService, KinesisStreamService,
     BackupVaultService
 )
+from .services.analytics import (
+    AthenaService, GlueService, GlueCrawlerService, EMRClusterService,
+    DataPipelineService, RedshiftClusterService, OpenSearchDomainService
+)
+from .services.ml import (
+    SageMakerNotebookService, SageMakerEndpointService, SageMakerModelService,
+    ComprehendService, RekognitionCollectionService
+)
+from .services.compute import (
+    BatchJobQueueService, BatchComputeEnvironmentService, ElasticBeanstalkService,
+    AppRunnerService, LightsailInstanceService, Cloud9EnvironmentService
+)
+from .services.storage import (
+    EFSFileSystemService, FSxFileSystemService, StorageGatewayService, GlacierVaultService
+)
+from .services.devtools import (
+    CodeCommitRepositoryService, CodeBuildProjectService, CodeDeployApplicationService,
+    CodePipelineService, CodeArtifactRepositoryService
+)
 
 # Initialize colorama
 init(autoreset=True)
@@ -34,11 +53,23 @@ ALL_SERVICES = {
     'ami': AMIService,
     'apigateway': APIGatewayService,
     'apigatewayv2': APIGatewayV2Service,
+    'app-runner': AppRunnerService,
+    'athena': AthenaService,
     'autoscaling': AutoScalingGroupService,
     'backup-vaults': BackupVaultService,
+    'batch-compute-envs': BatchComputeEnvironmentService,
+    'batch-job-queues': BatchJobQueueService,
+    'cloud9': Cloud9EnvironmentService,
     'cloudformation': CloudFormationService,
     'cloudwatch-alarms': CloudWatchAlarmsService,
     'cloudwatch-logs': CloudWatchLogsService,
+    'codeartifact': CodeArtifactRepositoryService,
+    'codebuild': CodeBuildProjectService,
+    'codecommit': CodeCommitRepositoryService,
+    'codedeploy': CodeDeployApplicationService,
+    'codepipeline': CodePipelineService,
+    'comprehend': ComprehendService,
+    'data-pipeline': DataPipelineService,
     'dynamodb': DynamoDBService,
     'ebs': EBSService,
     'ebs-snapshots': EBSSnapshotService,
@@ -46,10 +77,17 @@ ALL_SERVICES = {
     'ecr': ECRService,
     'ecs-clusters': ECSClusterService,
     'ecs-tasks': ECSTaskDefinitionService,
+    'efs': EFSFileSystemService,
     'eks': EKSClusterService,
     'elasticache': ElastiCacheService,
+    'elastic-beanstalk': ElasticBeanstalkService,
     'elastic-ips': ElasticIPService,
     'elb': ELBService,
+    'emr': EMRClusterService,
+    'fsx': FSxFileSystemService,
+    'glacier-vaults': GlacierVaultService,
+    'glue-crawlers': GlueCrawlerService,
+    'glue-databases': GlueService,
     'iam-groups': IAMGroupService,
     'iam-policies': IAMPolicyService,
     'iam-roles': IAMRoleService,
@@ -59,15 +97,23 @@ ALL_SERVICES = {
     'lambda': LambdaService,
     'lambda-layers': LambdaLayerService,
     'launch-templates': LaunchTemplateService,
+    'lightsail': LightsailInstanceService,
+    'opensearch': OpenSearchDomainService,
     'rds-clusters': RDSClusterService,
     'rds-instances': RDSInstanceService,
     'rds-snapshots': RDSSnapshotService,
+    'redshift': RedshiftClusterService,
+    'rekognition': RekognitionCollectionService,
     'route53': Route53Service,
     's3': S3Service,
+    'sagemaker-endpoints': SageMakerEndpointService,
+    'sagemaker-models': SageMakerModelService,
+    'sagemaker-notebooks': SageMakerNotebookService,
     'secrets-manager': SecretsManagerService,
     'security-groups': SecurityGroupService,
     'sns': SNSService,
     'sqs': SQSService,
+    'storage-gateway': StorageGatewayService,
     'subnets': SubnetService,
     'vpcs': VPCService,
 }
