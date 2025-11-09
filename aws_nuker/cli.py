@@ -7,6 +7,7 @@ from typing import List
 import sys
 
 from .utils import parse_regions
+from .cost_estimator import CostEstimator
 from .services.ec2 import EC2Service, EBSService, EBSSnapshotService, AMIService, ElasticIPService, KeyPairService
 from .services.vpc import VPCService, SecurityGroupService, SubnetService
 from .services.s3 import S3Service
@@ -172,7 +173,13 @@ def print_banner():
     '-t',
     help='Filter resources by tags (comma-separated, e.g., "env=dev,owner=*,!protected")'
 )
-def main(regions, services, dry_run, list_services, yes, tags):
+@click.option(
+    '--estimate-cost',
+    '-e',
+    is_flag=True,
+    help='Show cost estimation before deletion'
+)
+def main(regions, services, dry_run, list_services, yes, tags, estimate_cost):
     """
     AWS Nuker - Ruthlessly destroy AWS resources
     
@@ -245,6 +252,55 @@ def main(regions, services, dry_run, list_services, yes, tags):
     print(f"  Dry Run: {Fore.YELLOW}{'Yes' if dry_run else 'No'}{Style.RESET_ALL}")
     if tag_filters:
         print(f"  Tag Filters: {Fore.YELLOW}{', '.join(tag_filters)}{Style.RESET_ALL}")
+    if estimate_cost:
+        print(f"  Cost Estimation: {Fore.YELLOW}Enabled{Style.RESET_ALL}")
+    
+    # Cost estimation (if enabled)
+    all_resources = []
+    if estimate_cost:
+        print(f"\n{Fore.CYAN}Discovering resources for cost estimation...{Style.RESET_ALL}")
+        
+        for region in region_list:
+            cost_estimator = CostEstimator(region=region)
+            
+            for service_name in service_list:
+                service_class = ALL_SERVICES[service_name]
+                
+                try:
+                    # Create service in dry-run mode for discovery
+                    service = service_class(region=region, dry_run=True, tag_filters=tag_filters)
+                    resources = service.list_resources()
+                    
+                    # Add service metadata to each resource
+                    for resource in resources:
+                        resource['service'] = service_name
+                        resource['region'] = region
+                        all_resources.append(resource)
+                    
+                except Exception as e:
+                    error_type = type(e).__name__
+                    print(f"{Fore.YELLOW}Could not discover {service_name} in {region}: {error_type}{Style.RESET_ALL}")
+        
+        if all_resources:
+            cost_savings = cost_estimator.estimate_deletion_savings(all_resources)
+            
+            print(f"\n{Fore.CYAN}{'='*80}{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}COST ESTIMATION{Style.RESET_ALL}")
+            print(f"{Fore.CYAN}{'='*80}{Style.RESET_ALL}")
+            print(f"  {Fore.GREEN}Resources to delete: {cost_savings['resource_count']}{Style.RESET_ALL}")
+            print(f"  {Fore.YELLOW}Estimated Monthly Savings: ${cost_savings['monthly_savings']:.2f}{Style.RESET_ALL}")
+            print(f"  {Fore.YELLOW}Estimated Yearly Savings: ${cost_savings['yearly_savings']:.2f}{Style.RESET_ALL}")
+            
+            if cost_savings['breakdown_by_service']:
+                print(f"\n{Fore.CYAN}Savings Breakdown by Service:{Style.RESET_ALL}")
+                for svc, cost in sorted(cost_savings['breakdown_by_service'].items(), key=lambda x: x[1], reverse=True):
+                    print(f"    {svc}: {Fore.YELLOW}${cost:.2f}/month{Style.RESET_ALL}")
+            
+            print(f"{Fore.CYAN}{'='*80}{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Note: Cost estimates are approximate based on standard pricing{Style.RESET_ALL}")
+        else:
+            print(f"\n{Fore.YELLOW}No resources found matching criteria{Style.RESET_ALL}")
+            sys.exit(0)
     
     # Confirmation prompt
     if not dry_run and not yes:

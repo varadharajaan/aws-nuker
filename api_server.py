@@ -15,6 +15,7 @@ from pydantic import BaseModel
 import boto3
 from aws_nuker.services import get_all_services
 from aws_nuker.utils import parse_regions, parse_tag_filters, resource_matches_filters
+from aws_nuker.cost_estimator import CostEstimator
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -275,6 +276,72 @@ async def get_reports() -> List[Dict[str, Any]]:
     """Get audit logs and cleanup reports"""
     # In production, this would query from database
     return []
+
+@app.post("/api/estimate-cost")
+async def estimate_cost(request: DiscoverRequest) -> Dict[str, Any]:
+    """
+    Estimate cost savings from deleting resources.
+    
+    Args:
+        request: DiscoverRequest with regions, services, and optional tags
+    
+    Returns:
+        Cost estimation including monthly/yearly savings and breakdown
+    """
+    try:
+        services_map = get_all_services()
+        all_resources = []
+        
+        # Parse tag filters if provided
+        tag_filters = parse_tag_filters(request.tags) if request.tags else None
+        
+        # Discover resources
+        for region in request.regions:
+            cost_estimator = CostEstimator(region=region)
+            
+            for service_name in request.services:
+                if service_name not in services_map:
+                    continue
+                
+                service_class = services_map[service_name]
+                service = service_class(region=region, dry_run=True, tag_filters=tag_filters)
+                
+                try:
+                    resources = service.list_resources()
+                    
+                    # Add metadata for cost estimation
+                    for resource in resources:
+                        resource['service'] = service_name
+                        resource['region'] = region
+                        all_resources.append(resource)
+                        
+                except Exception as e:
+                    logger.error(f"Error listing {service_name} in {region}: {e}")
+                    continue
+        
+        if not all_resources:
+            return {
+                "resource_count": 0,
+                "monthly_savings": 0,
+                "yearly_savings": 0,
+                "breakdown_by_service": {},
+                "message": "No resources found matching criteria"
+            }
+        
+        # Estimate cost savings
+        cost_savings = cost_estimator.estimate_deletion_savings(all_resources)
+        
+        return {
+            "resource_count": cost_savings['resource_count'],
+            "monthly_savings": cost_savings['monthly_savings'],
+            "yearly_savings": cost_savings['yearly_savings'],
+            "breakdown_by_service": cost_savings['breakdown_by_service'],
+            "note": "Cost estimates are approximate based on standard AWS pricing"
+        }
+        
+    except Exception as e:
+        logger.error(f"Cost estimation failed: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     import uvicorn

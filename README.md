@@ -21,6 +21,7 @@ This tool is **EXTREMELY DANGEROUS** and will **PERMANENTLY DELETE** AWS resourc
 ✅ **Multi-Region Support** - Clean resources across multiple regions or all regions  
 ✅ **Selective Cleanup** - Choose specific services to clean  
 ✅ **Tag-Based Filtering** - Filter resources by tags with wildcard patterns  
+✅ **Cost Estimation** - Estimate savings before deletion (NEW!)  
 ✅ **Web Dashboard** - React + TypeScript UI with visualizations and charts  
 ✅ **REST API** - FastAPI backend for programmatic access  
 ✅ **Dry Run Mode** - Preview what would be deleted before actual deletion  
@@ -42,6 +43,9 @@ aws configure
 
 # Dry run to preview deletion
 aws-nuker --regions us-east-1 --services ec2-instances --tags "env=dev" --dry-run
+
+# Estimate cost savings before deletion
+aws-nuker --regions us-east-1 --services ec2-instances --tags "env=dev" --estimate-cost --dry-run
 
 # Execute deletion
 aws-nuker --regions us-east-1 --services ec2-instances --tags "env=dev" --yes
@@ -91,6 +95,7 @@ FastAPI-powered backend for custom integrations:
 - `GET /api/regions` - List available regions  
 - `POST /api/discover` - Discover resources
 - `POST /api/dryrun` - Simulate deletion
+- `POST /api/estimate-cost` - Estimate cost savings (NEW!)
 - `POST /api/delete` - Execute deletion
 - `GET /api/reports` - Fetch audit logs
 
@@ -804,6 +809,21 @@ Contributions are welcome! Please:
 2. Create a feature branch
 3. Add tests for new services
 4. Submit a pull request
+
+See [ROADMAP.md](ROADMAP.md) for planned features and priorities.
+
+## Roadmap
+
+We have an active roadmap for future enhancements. See [ROADMAP.md](ROADMAP.md) for details.
+
+**Highlights:**
+- ✅ Tag-based filtering (**COMPLETED**)
+- ✅ Cost estimation (**COMPLETED**)
+- 🚧 Advanced filtering (date, size, state) - **In Progress**
+- 📋 Policy templates (JSON configs) - **Planned**
+- 📋 Soft delete with recovery - **Planned**
+- 📋 Approval workflows - **Planned**
+- 📋 Notifications (Slack/email) - **Planned**
 
 ## License
 
