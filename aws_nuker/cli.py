@@ -9,6 +9,10 @@ from .config import NukerConfig, ALL_AWS_REGIONS
 from .orchestrator import AWSNuker
 from .logger import get_logger
 from .registry import get_available_services
+from .tag_manager import TagManager, TagFilter
+from .policy_templates import PolicyTemplates, PolicyType
+from .approval_gate import ApprovalGate
+from .notification_manager import NotificationManager
 
 # Initialize colorama
 init(autoreset=True)
@@ -220,6 +224,311 @@ def list_regions():
         print(f"  {', '.join(ALL_AWS_REGIONS[i:i+4])}")
 
     print(f"\n{Fore.GREEN}Total: {len(ALL_AWS_REGIONS)} regions{Style.RESET_ALL}\n")
+
+
+@cli.command()
+@click.option(
+    "--region",
+    "-r",
+    default="us-east-1",
+    help="AWS region to discover resources in"
+)
+@click.option(
+    "--tag-key",
+    help="Filter by tag key pattern (supports wildcards)"
+)
+@click.option(
+    "--tag-value",
+    help="Filter by tag value pattern (supports wildcards)"
+)
+@click.option(
+    "--show-untagged",
+    is_flag=True,
+    help="Show untagged resources"
+)
+def discover_tags(region, tag_key, tag_value, show_untagged):
+    """Discover and group resources by tags.
+    
+    Examples:
+    
+        # Discover all resources
+        aws-nuker discover-tags --region us-east-1
+        
+        # Find resources with env=dev
+        aws-nuker discover-tags --tag-key env --tag-value dev
+        
+        # Find untagged resources
+        aws-nuker discover-tags --show-untagged
+    """
+    print(f"\n{Fore.CYAN}Discovering resources in {region}...{Style.RESET_ALL}\n")
+    
+    tag_manager = TagManager(region=region)
+    
+    # Create filters if specified
+    tag_filters = []
+    if tag_key or tag_value:
+        tag_filters = tag_manager.filter_by_tag_pattern(
+            key_pattern=tag_key,
+            value_pattern=tag_value
+        )
+    
+    # Discover resources
+    result = tag_manager.discover_resources(tag_filters=tag_filters if tag_filters else None)
+    
+    # Display summary
+    summary_data = [
+        ["Total Resources", result.total_resources],
+        ["Tagged Resources", result.tagged_resources],
+        ["Untagged Resources", result.untagged_resources],
+        ["Tag Groups", len(result.tag_groups)]
+    ]
+    
+    print(f"{Fore.GREEN}Discovery Summary:{Style.RESET_ALL}\n")
+    print(tabulate(summary_data, tablefmt="grid"))
+    
+    # Show top tag groups
+    print(f"\n{Fore.GREEN}Top Tag Groups:{Style.RESET_ALL}\n")
+    
+    tag_group_data = []
+    for i, group in enumerate(result.tag_groups[:10], 1):
+        tags_str = ", ".join([f"{k}={v}" for k, v in group.tags.items()][:3])
+        if len(group.tags) > 3:
+            tags_str += "..."
+        
+        tag_group_data.append([
+            i,
+            tags_str or "UNTAGGED",
+            group.resource_count,
+            ", ".join(list(group.resource_types)[:2])
+        ])
+    
+    print(tabulate(
+        tag_group_data,
+        headers=["#", "Tags", "Resources", "Types"],
+        tablefmt="grid"
+    ))
+    
+    if show_untagged:
+        untagged = tag_manager.filter_untagged_resources(result)
+        print(f"\n{Fore.YELLOW}Untagged Resources: {len(untagged)}{Style.RESET_ALL}\n")
+        
+        if untagged:
+            untagged_data = []
+            for resource in untagged[:20]:
+                untagged_data.append([
+                    resource.get('ResourceType', 'Unknown'),
+                    resource.get('ARN', 'Unknown')[:60] + "..."
+                ])
+            
+            print(tabulate(
+                untagged_data,
+                headers=["Type", "ARN"],
+                tablefmt="grid"
+            ))
+
+
+@cli.command()
+def list_policies():
+    """List available cleanup policy templates.
+    
+    Shows predefined policies like dev cleanup, orphan purge, and cost optimization.
+    """
+    print(f"\n{Fore.CYAN}Available Cleanup Policies:{Style.RESET_ALL}\n")
+    
+    templates = PolicyTemplates.get_all_templates()
+    
+    policy_data = []
+    for policy in templates:
+        policy_data.append([
+            policy.name,
+            policy.policy_type.value,
+            f"${policy.approval_threshold_usd}",
+            "Yes" if policy.soft_delete else "No",
+            policy.soft_delete_ttl_days if policy.soft_delete else "N/A"
+        ])
+    
+    print(tabulate(
+        policy_data,
+        headers=["Name", "Type", "Approval >", "Soft Delete", "TTL Days"],
+        tablefmt="grid"
+    ))
+    
+    print(f"\n{Fore.GREEN}Use 'aws-nuker show-policy <type>' to see policy details{Style.RESET_ALL}\n")
+
+
+@cli.command()
+@click.argument("policy_type", type=click.Choice([
+    "dev_cleanup", "orphan_purge", "cost_kill", "storage_cleanup"
+]))
+def show_policy(policy_type):
+    """Show details of a specific policy template.
+    
+    Examples:
+    
+        aws-nuker show-policy dev_cleanup
+        aws-nuker show-policy orphan_purge
+    """
+    policy = PolicyTemplates.get_template_by_type(PolicyType(policy_type))
+    
+    if not policy:
+        print(f"{Fore.RED}Policy not found{Style.RESET_ALL}")
+        return
+    
+    print(f"\n{Fore.CYAN}Policy: {policy.name}{Style.RESET_ALL}\n")
+    print(f"{Fore.GREEN}Description:{Style.RESET_ALL} {policy.description}\n")
+    
+    details = [
+        ["Type", policy.policy_type.value],
+        ["Age Threshold", f"{policy.age_threshold_days} days"],
+        ["Approval Required", "Yes" if policy.require_approval else "No"],
+        ["Approval Threshold", f"${policy.approval_threshold_usd}"],
+        ["Soft Delete", "Yes" if policy.soft_delete else "No"],
+        ["Soft Delete TTL", f"{policy.soft_delete_ttl_days} days" if policy.soft_delete else "N/A"],
+        ["Create Snapshots", "Yes" if policy.create_snapshot else "No"],
+        ["Snapshot Threshold", f"{policy.snapshot_threshold_gb} GB" if policy.create_snapshot else "N/A"],
+        ["Services", ", ".join(policy.included_services[:5]) + ("..." if len(policy.included_services) > 5 else "")],
+        ["Notifications", ", ".join(policy.notification_channels)]
+    ]
+    
+    print(tabulate(details, tablefmt="grid"))
+    
+    print(f"\n{Fore.CYAN}Tag Filters:{Style.RESET_ALL}\n")
+    print(policy.to_json())
+
+
+@cli.command()
+@click.option(
+    "--region",
+    "-r",
+    default="us-east-1",
+    help="AWS region"
+)
+@click.option(
+    "--min-resources",
+    default=5,
+    type=int,
+    help="Minimum resources in group to suggest"
+)
+def suggest_cleanup(region, min_resources):
+    """Get intelligent cleanup suggestions based on tags.
+    
+    Analyzes resources and suggests groups that might be good cleanup candidates.
+    """
+    print(f"\n{Fore.CYAN}Analyzing resources for cleanup opportunities...{Style.RESET_ALL}\n")
+    
+    tag_manager = TagManager(region=region)
+    suggestions = tag_manager.suggest_cleanup_targets(min_resource_count=min_resources)
+    
+    if not suggestions:
+        print(f"{Fore.GREEN}No cleanup suggestions found{Style.RESET_ALL}")
+        return
+    
+    print(f"{Fore.YELLOW}Cleanup Suggestions:{Style.RESET_ALL}\n")
+    
+    suggestion_data = []
+    for i, (group, reason) in enumerate(suggestions, 1):
+        tags_str = ", ".join([f"{k}={v}" for k, v in group.tags.items()][:2])
+        suggestion_data.append([
+            i,
+            tags_str,
+            group.resource_count,
+            reason
+        ])
+    
+    print(tabulate(
+        suggestion_data,
+        headers=["#", "Tags", "Resources", "Reason"],
+        tablefmt="grid"
+    ))
+    
+    print(f"\n{Fore.GREEN}Total suggestions: {len(suggestions)}{Style.RESET_ALL}\n")
+
+
+@cli.command()
+@click.option(
+    "--region",
+    "-r",
+    default="us-east-1",
+    help="AWS region"
+)
+@click.option(
+    "--tag-key",
+    required=True,
+    help="Tag key to filter by"
+)
+@click.option(
+    "--tag-value",
+    required=True,
+    help="Tag value to filter by"
+)
+@click.option(
+    "--dry-run",
+    is_flag=True,
+    help="Preview resources without deleting"
+)
+@click.option(
+    "--yes",
+    "-y",
+    is_flag=True,
+    help="Skip confirmation"
+)
+def nuke_by_tag(region, tag_key, tag_value, dry_run, yes):
+    """Delete resources by tag (e.g., env=dev).
+    
+    Examples:
+    
+        # Preview deletion
+        aws-nuker nuke-by-tag --tag-key env --tag-value dev --dry-run
+        
+        # Delete resources
+        aws-nuker nuke-by-tag --tag-key env --tag-value dev --yes
+    """
+    print(f"\n{Fore.CYAN}Finding resources with {tag_key}={tag_value}...{Style.RESET_ALL}\n")
+    
+    tag_manager = TagManager(region=region)
+    resources = tag_manager.get_resources_by_tags({tag_key: tag_value})
+    
+    if not resources:
+        print(f"{Fore.GREEN}No resources found with specified tags{Style.RESET_ALL}")
+        return
+    
+    print(f"{Fore.YELLOW}Found {len(resources)} resources{Style.RESET_ALL}\n")
+    
+    # Show preview
+    preview_data = []
+    for resource in resources[:20]:
+        preview_data.append([
+            resource.get('ResourceType', 'Unknown'),
+            resource.get('ARN', 'Unknown')[:70] + "..."
+        ])
+    
+    print(tabulate(
+        preview_data,
+        headers=["Type", "ARN"],
+        tablefmt="grid"
+    ))
+    
+    if len(resources) > 20:
+        print(f"\n{Fore.YELLOW}... and {len(resources) - 20} more{Style.RESET_ALL}")
+    
+    if dry_run:
+        print(f"\n{Fore.GREEN}Dry run complete - no resources deleted{Style.RESET_ALL}\n")
+        return
+    
+    # Confirmation
+    if not yes:
+        print(f"\n{Fore.RED}WARNING: This will delete {len(resources)} resources!{Style.RESET_ALL}")
+        confirmation = click.prompt(
+            f"{Fore.YELLOW}Type 'DELETE' to proceed{Style.RESET_ALL}",
+            type=str
+        )
+        
+        if confirmation != "DELETE":
+            print(f"{Fore.GREEN}Operation cancelled{Style.RESET_ALL}")
+            return
+    
+    print(f"\n{Fore.RED}Tag-based deletion would proceed here{Style.RESET_ALL}")
+    print(f"{Fore.YELLOW}Note: Full implementation requires orchestrator integration{Style.RESET_ALL}\n")
 
 
 def main():
