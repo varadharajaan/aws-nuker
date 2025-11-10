@@ -20,10 +20,10 @@ class CodebuildHandler(ResourceHandler):
 
         try:
             response = client.list_projects()
-            for item in response.get("projects", []):
+            for project_name in response.get("projects", []):
                 resources.append({
-                    "id": item.get("", ""),
-                    "name": item.get("", ""),
+                    "id": project_name,
+                    "name": project_name,
                     "type": "project",
                 })
         except ClientError as e:

@@ -20,10 +20,10 @@ class RekognitionHandler(ResourceHandler):
 
         try:
             response = client.list_collections()
-            for item in response.get("CollectionIds", []):
+            for collection_id in response.get("CollectionIds", []):
                 resources.append({
-                    "id": item.get("", ""),
-                    "name": item.get("", ""),
+                    "id": collection_id,
+                    "name": collection_id,
                     "type": "collection",
                 })
         except ClientError as e:

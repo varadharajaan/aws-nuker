@@ -20,10 +20,10 @@ class Cloud9Handler(ResourceHandler):
 
         try:
             response = client.list_environments()
-            for item in response.get("environmentIds", []):
+            for env_id in response.get("environmentIds", []):
                 resources.append({
-                    "id": item.get("", ""),
-                    "name": item.get("", ""),
+                    "id": env_id,
+                    "name": env_id,
                     "type": "environment",
                 })
         except ClientError as e:

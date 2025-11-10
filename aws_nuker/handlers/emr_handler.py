@@ -38,7 +38,7 @@ class EmrHandler(ResourceHandler):
         resource_id = resource.get("id")
 
         try:
-            client.terminate_job_flows(JobFlowIds=resource_id)
+            client.terminate_job_flows(JobFlowIds=[resource_id])
             return True
         except ClientError as e:
             self.logger.error(f"Error deleting EMR resource {resource_id}: {str(e)}")

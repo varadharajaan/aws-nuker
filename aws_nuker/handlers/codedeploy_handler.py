@@ -20,10 +20,10 @@ class CodedeployHandler(ResourceHandler):
 
         try:
             response = client.list_applications()
-            for item in response.get("applications", []):
+            for app_name in response.get("applications", []):
                 resources.append({
-                    "id": item.get("", ""),
-                    "name": item.get("", ""),
+                    "id": app_name,
+                    "name": app_name,
                     "type": "application",
                 })
         except ClientError as e:

@@ -20,10 +20,10 @@ class FirehoseHandler(ResourceHandler):
 
         try:
             response = client.list_delivery_streams()
-            for item in response.get("DeliveryStreamNames", []):
+            for stream_name in response.get("DeliveryStreamNames", []):
                 resources.append({
-                    "id": item.get("", ""),
-                    "name": item.get("", ""),
+                    "id": stream_name,
+                    "name": stream_name,
                     "type": "stream",
                 })
         except ClientError as e:
