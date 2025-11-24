@@ -63,6 +63,13 @@ from .handlers import (
     FSxHandler,
     DataSyncHandler,
     InspectorHandler,
+    AutoScalingHandler,
+    CodeDeployHandler,
+    XRayHandler,
+    MQHandler,
+    QuickSightHandler,
+    MacieHandler,
+    WAFHandler,
 )
 
 
@@ -131,6 +138,13 @@ HANDLER_REGISTRY: Dict[str, Type[ResourceHandler]] = {
     "fsx": FSxHandler,
     "datasync": DataSyncHandler,
     "inspector": InspectorHandler,
+    "autoscaling": AutoScalingHandler,
+    "codedeploy": CodeDeployHandler,
+    "xray": XRayHandler,
+    "mq": MQHandler,
+    "quicksight": QuickSightHandler,
+    "macie": MacieHandler,
+    "waf": WAFHandler,
 }
 
 

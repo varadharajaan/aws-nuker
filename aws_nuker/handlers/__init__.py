@@ -60,6 +60,13 @@ from .transfer_handler import TransferHandler
 from .fsx_handler import FSxHandler
 from .datasync_handler import DataSyncHandler
 from .inspector_handler import InspectorHandler
+from .autoscaling_handler import AutoScalingHandler
+from .codedeploy_handler import CodeDeployHandler
+from .xray_handler import XRayHandler
+from .mq_handler import MQHandler
+from .quicksight_handler import QuickSightHandler
+from .macie_handler import MacieHandler
+from .waf_handler import WAFHandler
 
 __all__ = [
     "EC2Handler",
@@ -122,4 +129,11 @@ __all__ = [
     "FSxHandler",
     "DataSyncHandler",
     "InspectorHandler",
+    "AutoScalingHandler",
+    "CodeDeployHandler",
+    "XRayHandler",
+    "MQHandler",
+    "QuickSightHandler",
+    "MacieHandler",
+    "WAFHandler",
 ]
