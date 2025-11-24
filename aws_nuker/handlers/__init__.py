@@ -45,6 +45,21 @@ from .backup_handler import BackupHandler
 from .elasticbeanstalk_handler import ElasticBeanstalkHandler
 from .lightsail_handler import LightsailHandler
 from .sagemaker_handler import SageMakerHandler
+from .neptune_handler import NeptuneHandler
+from .docdb_handler import DocumentDBHandler
+from .opensearch_handler import OpenSearchHandler
+from .cloudmap_handler import CloudMapHandler
+from .appflow_handler import AppFlowHandler
+from .dms_handler import DMSHandler
+from .firehose_handler import FirehoseHandler
+from .kafka_handler import KafkaHandler
+from .directconnect_handler import DirectConnectHandler
+from .appmesh_handler import AppMeshHandler
+from .workspaces_handler import WorkSpacesHandler
+from .transfer_handler import TransferHandler
+from .fsx_handler import FSxHandler
+from .datasync_handler import DataSyncHandler
+from .inspector_handler import InspectorHandler
 
 __all__ = [
     "EC2Handler",
@@ -92,4 +107,19 @@ __all__ = [
     "ElasticBeanstalkHandler",
     "LightsailHandler",
     "SageMakerHandler",
+    "NeptuneHandler",
+    "DocumentDBHandler",
+    "OpenSearchHandler",
+    "CloudMapHandler",
+    "AppFlowHandler",
+    "DMSHandler",
+    "FirehoseHandler",
+    "KafkaHandler",
+    "DirectConnectHandler",
+    "AppMeshHandler",
+    "WorkSpacesHandler",
+    "TransferHandler",
+    "FSxHandler",
+    "DataSyncHandler",
+    "InspectorHandler",
 ]

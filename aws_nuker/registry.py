@@ -48,6 +48,21 @@ from .handlers import (
     ElasticBeanstalkHandler,
     LightsailHandler,
     SageMakerHandler,
+    NeptuneHandler,
+    DocumentDBHandler,
+    OpenSearchHandler,
+    CloudMapHandler,
+    AppFlowHandler,
+    DMSHandler,
+    FirehoseHandler,
+    KafkaHandler,
+    DirectConnectHandler,
+    AppMeshHandler,
+    WorkSpacesHandler,
+    TransferHandler,
+    FSxHandler,
+    DataSyncHandler,
+    InspectorHandler,
 )
 
 
@@ -101,6 +116,21 @@ HANDLER_REGISTRY: Dict[str, Type[ResourceHandler]] = {
     "elasticbeanstalk": ElasticBeanstalkHandler,
     "lightsail": LightsailHandler,
     "sagemaker": SageMakerHandler,
+    "neptune": NeptuneHandler,
+    "docdb": DocumentDBHandler,
+    "opensearch": OpenSearchHandler,
+    "cloudmap": CloudMapHandler,
+    "appflow": AppFlowHandler,
+    "dms": DMSHandler,
+    "firehose": FirehoseHandler,
+    "kafka": KafkaHandler,
+    "directconnect": DirectConnectHandler,
+    "appmesh": AppMeshHandler,
+    "workspaces": WorkSpacesHandler,
+    "transfer": TransferHandler,
+    "fsx": FSxHandler,
+    "datasync": DataSyncHandler,
+    "inspector": InspectorHandler,
 }
 
 
