@@ -25,6 +25,26 @@ from .elasticache_handler import ElastiCacheHandler
 from .kms_handler import KMSHandler
 from .secretsmanager_handler import SecretsManagerHandler
 from .guardduty_handler import GuardDutyHandler
+from .acm_handler import ACMHandler
+from .cognito_handler import CognitoHandler
+from .cloudtrail_handler import CloudTrailHandler
+from .config_handler import ConfigHandler
+from .efs_handler import EFSHandler
+from .emr_handler import EMRHandler
+from .codecommit_handler import CodeCommitHandler
+from .codebuild_handler import CodeBuildHandler
+from .codepipeline_handler import CodePipelineHandler
+from .stepfunctions_handler import StepFunctionsHandler
+from .eventbridge_handler import EventBridgeHandler
+from .ses_handler import SESHandler
+from .batch_handler import BatchHandler
+from .ssm_handler import SSMHandler
+from .wafv2_handler import WAFv2Handler
+from .cloudfront_handler import CloudFrontHandler
+from .backup_handler import BackupHandler
+from .elasticbeanstalk_handler import ElasticBeanstalkHandler
+from .lightsail_handler import LightsailHandler
+from .sagemaker_handler import SageMakerHandler
 
 __all__ = [
     "EC2Handler",
@@ -52,4 +72,24 @@ __all__ = [
     "KMSHandler",
     "SecretsManagerHandler",
     "GuardDutyHandler",
+    "ACMHandler",
+    "CognitoHandler",
+    "CloudTrailHandler",
+    "ConfigHandler",
+    "EFSHandler",
+    "EMRHandler",
+    "CodeCommitHandler",
+    "CodeBuildHandler",
+    "CodePipelineHandler",
+    "StepFunctionsHandler",
+    "EventBridgeHandler",
+    "SESHandler",
+    "BatchHandler",
+    "SSMHandler",
+    "WAFv2Handler",
+    "CloudFrontHandler",
+    "BackupHandler",
+    "ElasticBeanstalkHandler",
+    "LightsailHandler",
+    "SageMakerHandler",
 ]
