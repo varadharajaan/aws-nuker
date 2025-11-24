@@ -35,8 +35,13 @@ class OpenSearchHandler(ResourceHandler):
                             "type": "domain",
                             "engine_version": domain.get("EngineVersion", ""),
                         })
-                    except ClientError:
+                    except ClientError as e:
                         # If we can't describe, add it anyway
+                        error_code = e.response.get("Error", {}).get("Code", "")
+                        if error_code not in ["ResourceNotFoundException"]:
+                            self.logger.warning(
+                                f"Could not describe OpenSearch domain {domain_name}: {str(e)}"
+                            )
                         resources.append({
                             "id": domain_name,
                             "name": domain_name,

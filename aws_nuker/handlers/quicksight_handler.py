@@ -1,7 +1,6 @@
 """QuickSight resource handler."""
 
 from typing import List, Dict, Any
-import boto3
 from botocore.exceptions import ClientError
 
 from ..base_handler import ResourceHandler

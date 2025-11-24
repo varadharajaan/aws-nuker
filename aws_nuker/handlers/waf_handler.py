@@ -59,18 +59,27 @@ class WAFHandler(ResourceHandler):
 
         return resources
 
+    def _get_change_token(self, waf) -> str:
+        """Get WAF change token."""
+        try:
+            response = waf.get_change_token()
+            return response["ChangeToken"]
+        except ClientError as e:
+            self.logger.error(f"Error getting WAF change token: {str(e)}")
+            return ""
+
     def delete_resource(self, resource: Dict[str, Any]) -> bool:
         """Delete a WAF Classic resource."""
         waf = self.session.client("waf")
         resource_type = resource.get("type")
         resource_id = resource.get("id")
 
+        change_token = self._get_change_token(waf)
+        if not change_token:
+            return False
+
         try:
             if resource_type == "web_acl":
-                # Get change token
-                token_response = waf.get_change_token()
-                change_token = token_response["ChangeToken"]
-                
                 waf.delete_web_acl(
                     WebACLId=resource_id,
                     ChangeToken=change_token
@@ -78,9 +87,6 @@ class WAFHandler(ResourceHandler):
                 return True
 
             elif resource_type == "rule_group":
-                token_response = waf.get_change_token()
-                change_token = token_response["ChangeToken"]
-                
                 waf.delete_rule_group(
                     RuleGroupId=resource_id,
                     ChangeToken=change_token
@@ -88,9 +94,6 @@ class WAFHandler(ResourceHandler):
                 return True
 
             elif resource_type == "rule":
-                token_response = waf.get_change_token()
-                change_token = token_response["ChangeToken"]
-                
                 waf.delete_rule(
                     RuleId=resource_id,
                     ChangeToken=change_token
