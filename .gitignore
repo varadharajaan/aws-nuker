@@ -3,6 +3,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+#node_modules
+node_modules/
+ui/dist/*
+ui./build/*
+ui/node_modules/*
+package-lock.json
+yarn.lock
+tsconfig.node.json
+
 # C extensions
 *.so
 
