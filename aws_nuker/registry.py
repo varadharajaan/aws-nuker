@@ -81,6 +81,16 @@ from .handlers import (
     MediaTailorHandler,
     ElasticTranscoderHandler,
     IVSHandler,
+    ComprehendHandler,
+    RekognitionHandler,
+    TextractHandler,
+    TranscribeHandler,
+    TranslateHandler,
+    PollyHandler,
+    PersonalizeHandler,
+    ForecastHandler,
+    FraudDetectorHandler,
+    KendraHandler,
 )
 
 
@@ -167,6 +177,16 @@ HANDLER_REGISTRY: Dict[str, Type[ResourceHandler]] = {
     "mediatailor": MediaTailorHandler,
     "elastictranscoder": ElasticTranscoderHandler,
     "ivs": IVSHandler,
+    "comprehend": ComprehendHandler,
+    "rekognition": RekognitionHandler,
+    "textract": TextractHandler,
+    "transcribe": TranscribeHandler,
+    "translate": TranslateHandler,
+    "polly": PollyHandler,
+    "personalize": PersonalizeHandler,
+    "forecast": ForecastHandler,
+    "frauddetector": FraudDetectorHandler,
+    "kendra": KendraHandler,
 }
 
 

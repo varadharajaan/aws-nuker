@@ -78,6 +78,16 @@ from .mediastore_handler import MediaStoreHandler
 from .mediatailor_handler import MediaTailorHandler
 from .elastictranscoder_handler import ElasticTranscoderHandler
 from .ivs_handler import IVSHandler
+from .comprehend_handler import ComprehendHandler
+from .rekognition_handler import RekognitionHandler
+from .textract_handler import TextractHandler
+from .transcribe_handler import TranscribeHandler
+from .translate_handler import TranslateHandler
+from .polly_handler import PollyHandler
+from .personalize_handler import PersonalizeHandler
+from .forecast_handler import ForecastHandler
+from .frauddetector_handler import FraudDetectorHandler
+from .kendra_handler import KendraHandler
 
 __all__ = [
     "EC2Handler",
@@ -158,4 +168,14 @@ __all__ = [
     "MediaTailorHandler",
     "ElasticTranscoderHandler",
     "IVSHandler",
+    "ComprehendHandler",
+    "RekognitionHandler",
+    "TextractHandler",
+    "TranscribeHandler",
+    "TranslateHandler",
+    "PollyHandler",
+    "PersonalizeHandler",
+    "ForecastHandler",
+    "FraudDetectorHandler",
+    "KendraHandler",
 ]
