@@ -67,6 +67,17 @@ from .mq_handler import MQHandler
 from .quicksight_handler import QuickSightHandler
 from .macie_handler import MacieHandler
 from .waf_handler import WAFHandler
+from .iot_handler import IoTHandler
+from .iotanalytics_handler import IoTAnalyticsHandler
+from .iotevents_handler import IoTEventsHandler
+from .iotsitewise_handler import IoTSiteWiseHandler
+from .mediaconvert_handler import MediaConvertHandler
+from .medialive_handler import MediaLiveHandler
+from .mediapackage_handler import MediaPackageHandler
+from .mediastore_handler import MediaStoreHandler
+from .mediatailor_handler import MediaTailorHandler
+from .elastictranscoder_handler import ElasticTranscoderHandler
+from .ivs_handler import IVSHandler
 
 __all__ = [
     "EC2Handler",
@@ -136,4 +147,15 @@ __all__ = [
     "QuickSightHandler",
     "MacieHandler",
     "WAFHandler",
+    "IoTHandler",
+    "IoTAnalyticsHandler",
+    "IoTEventsHandler",
+    "IoTSiteWiseHandler",
+    "MediaConvertHandler",
+    "MediaLiveHandler",
+    "MediaPackageHandler",
+    "MediaStoreHandler",
+    "MediaTailorHandler",
+    "ElasticTranscoderHandler",
+    "IVSHandler",
 ]

@@ -70,6 +70,17 @@ from .handlers import (
     QuickSightHandler,
     MacieHandler,
     WAFHandler,
+    IoTHandler,
+    IoTAnalyticsHandler,
+    IoTEventsHandler,
+    IoTSiteWiseHandler,
+    MediaConvertHandler,
+    MediaLiveHandler,
+    MediaPackageHandler,
+    MediaStoreHandler,
+    MediaTailorHandler,
+    ElasticTranscoderHandler,
+    IVSHandler,
 )
 
 
@@ -145,6 +156,17 @@ HANDLER_REGISTRY: Dict[str, Type[ResourceHandler]] = {
     "quicksight": QuickSightHandler,
     "macie": MacieHandler,
     "waf": WAFHandler,
+    "iot": IoTHandler,
+    "iotanalytics": IoTAnalyticsHandler,
+    "iotevents": IoTEventsHandler,
+    "iotsitewise": IoTSiteWiseHandler,
+    "mediaconvert": MediaConvertHandler,
+    "medialive": MediaLiveHandler,
+    "mediapackage": MediaPackageHandler,
+    "mediastore": MediaStoreHandler,
+    "mediatailor": MediaTailorHandler,
+    "elastictranscoder": ElasticTranscoderHandler,
+    "ivs": IVSHandler,
 }
 
 
