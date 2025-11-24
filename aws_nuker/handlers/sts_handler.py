@@ -20,5 +20,6 @@ class STSHandler(ResourceHandler):
 
     def delete_resource(self, resource: Dict[str, Any]) -> bool:
         """Delete STS resources."""
-        # STS temporary credentials expire automatically
-        return False
+        # STS temporary credentials expire automatically - nothing to delete
+        # Return True since there's no actual deletion needed
+        return True

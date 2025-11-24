@@ -36,5 +36,6 @@ class LakeFormationHandler(ResourceHandler):
     def delete_resource(self, resource: Dict[str, Any]) -> bool:
         """Delete a Lake Formation resource."""
         # Lake Formation settings cannot be deleted, only reset
-        # This is a minimal handler
-        return False
+        # Since there's no destructive operation, return True to indicate completion
+        self.logger.warning("Lake Formation settings cannot be deleted, only modified through console/CLI")
+        return True

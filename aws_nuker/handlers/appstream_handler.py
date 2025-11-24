@@ -55,8 +55,14 @@ class AppStreamHandler(ResourceHandler):
 
         try:
             if resource_type == "fleet":
-                # Stop fleet first
-                appstream.stop_fleet(Name=resource_name)
+                # Stop fleet first if it's running
+                try:
+                    appstream.stop_fleet(Name=resource_name)
+                except ClientError as e:
+                    # Fleet might already be stopped or in a non-stoppable state
+                    self.logger.warning(f"Could not stop fleet {resource_name}: {str(e)}")
+                
+                # Delete the fleet
                 appstream.delete_fleet(Name=resource_name)
                 return True
 

@@ -43,8 +43,8 @@ class CodeArtifactHandler(ResourceHandler):
                                     "domain": domain_name,
                                     "domain_owner": domain["owner"],
                                 })
-                    except ClientError:
-                        pass
+                    except ClientError as e:
+                        self.logger.error(f"Error listing repositories in domain {domain_name}: {str(e)}")
 
         except ClientError as e:
             self.logger.error(f"Error listing CodeArtifact domains: {str(e)}")
