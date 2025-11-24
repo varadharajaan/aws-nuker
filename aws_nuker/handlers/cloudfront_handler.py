@@ -61,9 +61,9 @@ class CloudFrontHandler(ResourceHandler):
                     DistributionConfig=config,
                     IfMatch=etag
                 )
-                self.logger.info(
+                self.logger.warning(
                     f"Disabled CloudFront distribution {distribution_id}. "
-                    "It must be fully deployed before deletion."
+                    "It must be fully deployed before deletion can complete."
                 )
                 # Note: Distribution must be in "Deployed" state before deletion
                 # This may take several minutes, so deletion might fail initially

@@ -1,6 +1,7 @@
 """QuickSight resource handler."""
 
 from typing import List, Dict, Any
+import boto3
 from botocore.exceptions import ClientError
 
 from ..base_handler import ResourceHandler
@@ -13,18 +14,22 @@ class QuickSightHandler(ResourceHandler):
     def service_name(self) -> str:
         return "quicksight"
 
+    def _get_account_id(self) -> str:
+        """Get AWS account ID."""
+        sts = self.session.client("sts")
+        try:
+            return sts.get_caller_identity()["Account"]
+        except ClientError:
+            self.logger.error("Could not get AWS account ID")
+            return ""
+
     def list_resources(self) -> List[Dict[str, Any]]:
         """List all QuickSight resources."""
         quicksight = self.session.client("quicksight")
         resources = []
 
-        # Get AWS account ID
-        import boto3
-        sts = boto3.client("sts")
-        try:
-            account_id = sts.get_caller_identity()["Account"]
-        except ClientError:
-            self.logger.error("Could not get AWS account ID")
+        account_id = self._get_account_id()
+        if not account_id:
             return resources
 
         try:
@@ -61,12 +66,8 @@ class QuickSightHandler(ResourceHandler):
         resource_type = resource.get("type")
         resource_id = resource.get("id")
 
-        # Get AWS account ID
-        import boto3
-        sts = boto3.client("sts")
-        try:
-            account_id = sts.get_caller_identity()["Account"]
-        except ClientError:
+        account_id = self._get_account_id()
+        if not account_id:
             return False
 
         try:

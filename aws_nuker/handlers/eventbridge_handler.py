@@ -53,12 +53,11 @@ class EventBridgeHandler(ResourceHandler):
 
     def is_default_resource(self, resource: Dict[str, Any]) -> bool:
         """Check if resource is a default resource."""
-        # Skip rules on default event bus that might be AWS managed
-        if resource.get("type") == "rule":
-            event_bus = resource.get("event_bus", "default")
-            if event_bus == "default":
-                # Could add logic to skip AWS-managed rules
-                return False
+        # Skip default event bus
+        if resource.get("type") == "event_bus" and resource.get("name") == "default":
+            return True
+        # Note: Could add logic to identify AWS-managed rules on default event bus
+        # if needed in the future
         return False
 
     def delete_resource(self, resource: Dict[str, Any]) -> bool:

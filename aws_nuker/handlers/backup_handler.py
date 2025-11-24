@@ -69,10 +69,17 @@ class BackupHandler(ResourceHandler):
                                     BackupVaultName=resource_name,
                                     RecoveryPointArn=recovery_point["RecoveryPointArn"]
                                 )
-                            except ClientError:
-                                pass
-                except ClientError:
-                    pass
+                            except ClientError as e:
+                                # Log but continue if individual recovery point can't be deleted
+                                error_code = e.response.get("Error", {}).get("Code", "")
+                                if error_code not in ["ResourceNotFoundException"]:
+                                    self.logger.warning(
+                                        f"Could not delete recovery point {recovery_point['RecoveryPointArn']}: {str(e)}"
+                                    )
+                except ClientError as e:
+                    self.logger.warning(
+                        f"Error listing recovery points for vault {resource_name}: {str(e)}"
+                    )
 
                 # Delete the vault
                 backup.delete_backup_vault(BackupVaultName=resource_name)

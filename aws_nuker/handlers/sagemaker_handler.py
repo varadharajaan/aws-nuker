@@ -90,8 +90,13 @@ class SageMakerHandler(ResourceHandler):
                 # Stop notebook first if it's running
                 try:
                     sagemaker.stop_notebook_instance(NotebookInstanceName=resource_name)
-                except ClientError:
-                    pass
+                except ClientError as e:
+                    # Notebook might already be stopped or in invalid state
+                    error_code = e.response.get("Error", {}).get("Code", "")
+                    if error_code not in ["ValidationException", "ResourceNotFoundException"]:
+                        self.logger.warning(
+                            f"Error stopping notebook instance {resource_name}: {str(e)}"
+                        )
                 sagemaker.delete_notebook_instance(NotebookInstanceName=resource_name)
                 return True
 
