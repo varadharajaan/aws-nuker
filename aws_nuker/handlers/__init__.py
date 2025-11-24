@@ -98,6 +98,29 @@ from .connect_handler import ConnectHandler
 from .workdocs_handler import WorkDocsHandler
 from .workmail_handler import WorkMailHandler
 from .pinpoint_handler import PinpointHandler
+from .cloud9_handler import Cloud9Handler
+from .cloudhsm_handler import CloudHSMHandler
+from .cloudsearch_handler import CloudSearchHandler
+from .codeartifact_handler import CodeArtifactHandler
+from .detective_handler import DetectiveHandler
+from .fms_handler import FMSHandler
+from .globalaccelerator_handler import GlobalAcceleratorHandler
+from .imagebuilder_handler import ImageBuilderHandler
+from .lakeformation_handler import LakeFormationHandler
+from .opsworks_handler import OpsWorksHandler
+from .organizations_handler import OrganizationsHandler
+from .apprunner_handler import AppRunnerHandler
+from .appstream_handler import AppStreamHandler
+from .outposts_handler import OutpostsHandler
+from .ram_handler import RAMHandler
+from .securityhub_handler import SecurityHubHandler
+from .serverlessrepo_handler import ServerlessRepoHandler
+from .servicecatalog_handler import ServiceCatalogHandler
+from .shield_handler import ShieldHandler
+from .signer_handler import SignerHandler
+from .storagegateway_handler import StorageGatewayHandler
+from .sts_handler import STSHandler
+from .swf_handler import SWFHandler
 
 __all__ = [
     "EC2Handler",
@@ -198,4 +221,27 @@ __all__ = [
     "WorkDocsHandler",
     "WorkMailHandler",
     "PinpointHandler",
+    "Cloud9Handler",
+    "CloudHSMHandler",
+    "CloudSearchHandler",
+    "CodeArtifactHandler",
+    "DetectiveHandler",
+    "FMSHandler",
+    "GlobalAcceleratorHandler",
+    "ImageBuilderHandler",
+    "LakeFormationHandler",
+    "OpsWorksHandler",
+    "OrganizationsHandler",
+    "AppRunnerHandler",
+    "AppStreamHandler",
+    "OutpostsHandler",
+    "RAMHandler",
+    "SecurityHubHandler",
+    "ServerlessRepoHandler",
+    "ServiceCatalogHandler",
+    "ShieldHandler",
+    "SignerHandler",
+    "StorageGatewayHandler",
+    "STSHandler",
+    "SWFHandler",
 ]
