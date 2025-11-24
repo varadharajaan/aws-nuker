@@ -91,6 +91,16 @@ from .handlers import (
     ForecastHandler,
     FraudDetectorHandler,
     KendraHandler,
+    TimestreamHandler,
+    KeyspacesHandler,
+    MemoryDBHandler,
+    QLDBHandler,
+    GlacierHandler,
+    ChimeHandler,
+    ConnectHandler,
+    WorkDocsHandler,
+    WorkMailHandler,
+    PinpointHandler,
 )
 
 
@@ -187,6 +197,16 @@ HANDLER_REGISTRY: Dict[str, Type[ResourceHandler]] = {
     "forecast": ForecastHandler,
     "frauddetector": FraudDetectorHandler,
     "kendra": KendraHandler,
+    "timestream": TimestreamHandler,
+    "keyspaces": KeyspacesHandler,
+    "memorydb": MemoryDBHandler,
+    "qldb": QLDBHandler,
+    "glacier": GlacierHandler,
+    "chime": ChimeHandler,
+    "connect": ConnectHandler,
+    "workdocs": WorkDocsHandler,
+    "workmail": WorkMailHandler,
+    "pinpoint": PinpointHandler,
 }
 
 

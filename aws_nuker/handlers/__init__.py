@@ -88,6 +88,16 @@ from .personalize_handler import PersonalizeHandler
 from .forecast_handler import ForecastHandler
 from .frauddetector_handler import FraudDetectorHandler
 from .kendra_handler import KendraHandler
+from .timestream_handler import TimestreamHandler
+from .keyspaces_handler import KeyspacesHandler
+from .memorydb_handler import MemoryDBHandler
+from .qldb_handler import QLDBHandler
+from .glacier_handler import GlacierHandler
+from .chime_handler import ChimeHandler
+from .connect_handler import ConnectHandler
+from .workdocs_handler import WorkDocsHandler
+from .workmail_handler import WorkMailHandler
+from .pinpoint_handler import PinpointHandler
 
 __all__ = [
     "EC2Handler",
@@ -178,4 +188,14 @@ __all__ = [
     "ForecastHandler",
     "FraudDetectorHandler",
     "KendraHandler",
+    "TimestreamHandler",
+    "KeyspacesHandler",
+    "MemoryDBHandler",
+    "QLDBHandler",
+    "GlacierHandler",
+    "ChimeHandler",
+    "ConnectHandler",
+    "WorkDocsHandler",
+    "WorkMailHandler",
+    "PinpointHandler",
 ]
