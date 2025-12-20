@@ -557,11 +557,14 @@ class Bulkhead:
         Acquire a slot in the bulkhead.
 
         Args:
-            timeout: Optional timeout in seconds
+            timeout: Optional timeout in seconds. If None, uses max_wait_seconds.
+                     If 0, performs a non-blocking attempt.
 
         Returns:
-            True if slot acquired, False if timed out
+            True if slot acquired, False if timed out or slot not available
         """
+        # Use explicit timeout if provided (including 0 for non-blocking),
+        # otherwise fall back to max_wait_seconds
         wait_time = timeout if timeout is not None else self.max_wait_seconds
         acquired = self._semaphore.acquire(timeout=wait_time)
 

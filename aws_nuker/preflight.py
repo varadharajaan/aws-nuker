@@ -360,20 +360,8 @@ class PreflightChecker:
         try:
             client = self._session.client(service, region_name=self.regions[0])
 
-            # Try a simple list operation based on service
-            list_operations = {
-                "ec2": lambda c: c.describe_instances(MaxResults=5),
-                "s3": lambda c: c.list_buckets(),
-                "lambda": lambda c: c.list_functions(MaxItems=1),
-                "rds": lambda c: c.describe_db_instances(),
-                "dynamodb": lambda c: c.list_tables(Limit=1),
-                "ecs": lambda c: c.list_clusters(maxResults=1),
-                "sns": lambda c: c.list_topics(),
-                "sqs": lambda c: c.list_queues(MaxResults=1),
-            }
-
-            if service in list_operations:
-                list_operations[service](client)
+            # Try a simple list operation to verify access
+            self._execute_basic_list_check(client, service)
 
             duration_ms = (time.time() - start_time) * 1000
             return CheckResult(
@@ -413,6 +401,36 @@ class PreflightChecker:
                 details={"error": str(e)},
                 duration_ms=duration_ms,
             )
+
+    def _execute_basic_list_check(self, client, service: str) -> None:
+        """
+        Execute a basic list operation to verify service access.
+
+        This method performs a minimal API call to verify that the credentials
+        have at least read access to the service.
+
+        Args:
+            client: Boto3 service client
+            service: AWS service name
+        """
+        # Service-specific list operations with minimal parameters
+        if service == "ec2":
+            client.describe_instances(MaxResults=5)
+        elif service == "s3":
+            client.list_buckets()
+        elif service == "lambda":
+            client.list_functions(MaxItems=1)
+        elif service == "rds":
+            client.describe_db_instances()
+        elif service == "dynamodb":
+            client.list_tables(Limit=1)
+        elif service == "ecs":
+            client.list_clusters(maxResults=1)
+        elif service == "sns":
+            client.list_topics()
+        elif service == "sqs":
+            client.list_queues(MaxResults=1)
+        # For other services, just creating the client is a basic check
 
     def _check_region_availability(self, region: str) -> CheckResult:
         """Check if a region is available."""

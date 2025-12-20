@@ -170,7 +170,12 @@ class S3Handler(ResourceHandler):
 
         Multi-Region Access Points provide a global endpoint that spans S3 buckets
         in multiple regions.
+
+        Note: Multi-Region Access Points API is only available in us-west-2.
+        This is an AWS API limitation, not a configuration choice.
         """
+        # Multi-Region Access Points API is only available in us-west-2
+        # See: https://docs.aws.amazon.com/AmazonS3/latest/userguide/MultiRegionAccessPointRequests.html
         s3control = self.session.client("s3control", region_name="us-west-2")
         resources = []
 
@@ -183,18 +188,15 @@ class S3Handler(ResourceHandler):
             paginator = s3control.get_paginator("list_multi_region_access_points")
             for page in paginator.paginate(AccountId=account_id):
                 for mrap in page.get("AccessPoints", []):
-                    regions = [
-                        r.get("Bucket", "").split("/")[-1] if "/" in r.get("Bucket", "") 
-                        else r.get("Bucket", "")
-                        for r in mrap.get("Regions", [])
-                    ]
+                    # Extract bucket names from regions configuration
+                    bucket_names = self._extract_mrap_buckets(mrap.get("Regions", []))
                     resources.append({
                         "id": mrap["Name"],
                         "name": mrap["Name"],
                         "type": "multi_region_access_point",
                         "alias": mrap.get("Alias"),
                         "status": mrap.get("Status"),
-                        "regions": regions,
+                        "buckets": bucket_names,
                     })
 
         except ClientError as e:
@@ -206,12 +208,45 @@ class S3Handler(ResourceHandler):
 
         return resources
 
+    def _extract_mrap_buckets(self, regions_config: List[Dict[str, Any]]) -> List[str]:
+        """
+        Extract bucket names from Multi-Region Access Point regions configuration.
+
+        The regions configuration contains bucket information that may be in
+        different formats depending on the AWS API version.
+
+        Args:
+            regions_config: List of region configurations from MRAP API
+
+        Returns:
+            List of bucket names
+        """
+        bucket_names = []
+        for region_info in regions_config:
+            bucket = region_info.get("Bucket", "")
+            if bucket:
+                # Handle both simple bucket names and ARN-style bucket identifiers
+                if "/" in bucket:
+                    # Format: arn:aws:s3:::bucket-name or account/bucket-name
+                    bucket_names.append(bucket.split("/")[-1])
+                elif ":::" in bucket:
+                    # ARN format: arn:aws:s3:::bucket-name
+                    bucket_names.append(bucket.split(":::")[-1])
+                else:
+                    bucket_names.append(bucket)
+        return bucket_names
+
+    # Known system-created Storage Lens dashboards that should not be deleted
+    SYSTEM_STORAGE_LENS_CONFIGS = frozenset({"default-account-dashboard"})
+
     def _list_storage_lens_configs(self) -> List[Dict[str, Any]]:
         """
         List all S3 Storage Lens configurations.
 
         Storage Lens delivers organization-wide visibility into object storage
         usage, activity trends, and recommendations.
+
+        Note: Excludes system-created dashboards that cannot be deleted.
         """
         s3control = self.session.client("s3control")
         resources = []
@@ -225,11 +260,12 @@ class S3Handler(ResourceHandler):
             response = s3control.list_storage_lens_configurations(AccountId=account_id)
 
             for config in response.get("StorageLensConfigurationList", []):
-                # Skip the default Storage Lens dashboard
-                if config.get("IsEnabled") and config.get("Id") != "default-account-dashboard":
+                config_id = config.get("Id", "")
+                # Skip system-created Storage Lens dashboards
+                if config.get("IsEnabled") and config_id not in self.SYSTEM_STORAGE_LENS_CONFIGS:
                     resources.append({
-                        "id": config["Id"],
-                        "name": config["Id"],
+                        "id": config_id,
+                        "name": config_id,
                         "type": "storage_lens_config",
                         "storage_lens_arn": config.get("StorageLensArn"),
                         "is_enabled": config.get("IsEnabled"),
