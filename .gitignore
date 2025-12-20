@@ -143,3 +143,4 @@ logs/
 audit/
 *.log
 config/aws_credentials.json
+ui/node_modules/*

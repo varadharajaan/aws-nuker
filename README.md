@@ -24,97 +24,170 @@ AWS Nuker is designed to **FORCEFULLY DELETE** all AWS resources (except default
 
 ## 🚀 Features
 
-- **Comprehensive Coverage**: Supports 123 AWS services defined (A-Z), with 28 actively implemented handlers
-- **Multi-Region Support**: Clean up resources across multiple AWS regions
-- **Flexible Region Selection**: Single region, comma-separated, range, or wildcard support
+- **Comprehensive Coverage**: **121 AWS service handlers** covering compute, storage, databases, analytics, ML/AI, IoT, media, networking, security, and more
+- **Multi-Region Support**: Clean up resources across all AWS regions simultaneously
+- **Flexible Region Selection**: Single region, comma-separated, range, or wildcard support (`us-*`, `*`)
 - **Force Delete**: Automatically handles resource dependencies and deletes them ruthlessly
-- **Dry Run Mode**: Preview what would be deleted without actually deleting
-- **Detailed Logging**: Complete audit trail of all operations
-- **Parallel Execution**: Speed up cleanup with parallel processing
-- **Smart Default Filtering**: Preserves default AWS resources (like default VPCs)
+- **Dry Run Mode**: Preview what would be deleted without actually deleting anything
+- **Detailed Logging**: Complete audit trail of all operations with timestamps
+- **Parallel Execution**: Speed up cleanup with parallel processing across regions
+- **Smart Default Filtering**: Preserves default AWS resources (like default VPCs and security groups)
 - **Interactive CLI**: User-friendly command-line interface with color output
+- **Tag-Based Filtering**: Target resources by tags for precise cleanup
+- **Web Dashboard**: Modern React-based UI for visual resource management
+- **RESTful API**: FastAPI backend for programmatic access
 - **Timing Metrics**: Track cleanup duration for each operation
 
 ## 📋 Supported AWS Services
 
-AWS Nuker has **123 AWS services defined** with **28 service keys** actively implemented by **25 unique handler classes**.
+AWS Nuker supports **121 fully-implemented AWS service handlers** with comprehensive resource cleanup across all major categories.
 
-### ✅ Compute & Containers (100% Coverage)
+### ✅ Compute & Containers (11 services)
 - **EC2**: Instances, Volumes, Snapshots, AMIs, Security Groups, Key Pairs, Elastic IPs
-- **ECS**: Clusters, Services, Tasks
+- **ECS**: Clusters, Services, Tasks, Task Definitions
 - **ECR**: Container Registries (with force delete)
 - **EKS**: Kubernetes Clusters (with nodegroup cleanup)
-- **Lambda**: Functions and Layers
+- **Lambda**: Functions, Layers, Event Source Mappings
+- **Batch**: Job Queues, Job Definitions, Compute Environments
+- **Elastic Beanstalk**: Applications, Environments
+- **Lightsail**: Instances, Databases, Load Balancers
+- **App Runner**: Services
+- **Outposts**: Outposts
+- **Image Builder**: Image Pipelines, Components, Recipes
 
-### ✅ Database (100% Coverage)
-- **RDS**: DB Instances, Clusters (Aurora), Snapshots
-- **DynamoDB**: Tables
-- **ElastiCache**: Clusters and Replication Groups (Redis/Memcached)
+### ✅ Database & Storage (16 services)
+- **RDS**: DB Instances, Clusters (Aurora), Snapshots, Parameter Groups
+- **DynamoDB**: Tables, Backups
+- **ElastiCache**: Clusters, Replication Groups (Redis/Memcached)
 - **Redshift**: Clusters (skip final snapshot)
+- **S3**: Buckets (with versioning and lifecycle support)
+- **EFS**: File Systems
+- **FSx**: File Systems (Windows, Lustre, NetApp ONTAP, OpenZFS)
+- **Neptune**: DB Clusters, DB Instances
+- **DocumentDB**: Clusters, Instances
+- **Keyspaces**: Keyspaces, Tables
+- **Timestream**: Databases, Tables
+- **MemoryDB**: Clusters
+- **QLDB**: Ledgers
+- **Glacier**: Vaults
+- **Storage Gateway**: Gateways
+- **Backup**: Backup Vaults, Recovery Points, Backup Plans
 
-### ✅ Storage
-- **S3**: Buckets (with versioning support)
-
-### ✅ Networking (100% Coverage)
-- **VPC**: VPCs, Subnets, Internet Gateways, NAT Gateways (excluding defaults)
-- **ELB/ELBv2**: Classic Load Balancers, Application Load Balancers, Network Load Balancers
-- **Route53**: Hosted Zones and Record Sets
+### ✅ Networking & Content Delivery (11 services)
+- **VPC**: VPCs, Subnets, Internet Gateways, NAT Gateways, Route Tables (excluding defaults)
+- **ELB/ELBv2**: Classic, Application, Network, Gateway Load Balancers
+- **Route53**: Hosted Zones, Record Sets
 - **API Gateway**: REST APIs (v1), HTTP APIs (v2), WebSocket APIs
+- **CloudFront**: Distributions
+- **Direct Connect**: Virtual Interfaces, Connections
+- **App Mesh**: Virtual Services, Virtual Nodes, Meshes
+- **Global Accelerator**: Accelerators, Listeners
+- **Cloud Map**: Namespaces, Services
 
-### ✅ Analytics (100% Coverage)
-- **Athena**: Workgroups and Named Queries
-- **Glue**: Databases, Crawlers, Jobs
-- **Kinesis**: Streams (with consumer deletion)
+### ✅ Analytics & Big Data (15 services)
+- **Athena**: Workgroups, Named Queries, Data Catalogs
+- **Glue**: Databases, Crawlers, Jobs, Triggers, Dev Endpoints
+- **Kinesis**: Data Streams (with consumer deletion)
+- **CloudSearch**: Domains
+- **QuickSight**: Data Sets, Dashboards, Analyses
+- **Lake Formation**: Data Lake Settings, Permissions
+- **Kafka/MSK**: Clusters
+- **EMR**: Clusters
+- **Firehose**: Delivery Streams
+- **OpenSearch**: Domains
+- **Data Pipeline**: Pipelines
+- **Redshift**: Clusters, Snapshots
 
-### ✅ Management & Governance (100% Coverage)
-- **CloudFormation**: Stacks
-- **CloudWatch**: Alarms, Log Groups
+### ✅ Developer Tools (10 services)
+- **CodeCommit**: Repositories
+- **CodeBuild**: Projects, Build Batches
+- **CodeDeploy**: Applications, Deployment Groups
+- **CodePipeline**: Pipelines
+- **Cloud9**: Environments
+- **X-Ray**: Sampling Rules, Groups
+- **CodeArtifact**: Domains, Repositories
 
-### ✅ Application Integration (100% Coverage)
-- **SNS**: Topics
-- **SQS**: Queues
+### ✅ Management & Governance (13 services)
+- **CloudFormation**: Stacks, StackSets
+- **CloudWatch**: Alarms, Log Groups, Dashboards
+- **Config**: Configuration Recorders, Delivery Channels, Rules
+- **Service Catalog**: Portfolios, Products
+- **Systems Manager (SSM)**: Parameters, Documents, Maintenance Windows
+- **CloudTrail**: Trails
+- **Organizations**: Organizational Units, Accounts
+- **OpsWorks**: Stacks, Layers, Apps
 
-### ✅ Security & Identity (100% Coverage)
-- **IAM**: Users, Roles, Policies (customer-managed only)
+### ✅ Security, Identity & Compliance (16 services)
+- **IAM**: Users, Roles, Policies, Groups (customer-managed only)
 - **KMS**: Customer-Managed Keys (schedules deletion)
 - **Secrets Manager**: Secrets (with force delete option)
-- **GuardDuty**: Detectors
+- **GuardDuty**: Detectors, Threat Intel Sets
+- **Inspector**: Assessment Targets, Templates
+- **Macie**: Classification Jobs, Custom Data Identifiers
+- **Cognito**: User Pools, Identity Pools
+- **Detective**: Graphs
+- **CloudHSM**: Clusters
+- **Security Hub**: Hubs, Standards Subscriptions
+- **WAF Classic**: Web ACLs, Rules, IP Sets
+- **WAF v2**: Web ACLs, Rule Groups, IP Sets
+- **Shield**: Protections
+- **Signer**: Signing Profiles
+- **ACM**: Certificates
+- **Firewall Manager (FMS)**: Policies
 
-### 📝 Defined Services (Ready for Handler Implementation)
+### ✅ Machine Learning & AI (11 services)
+- **SageMaker**: Endpoints, Notebook Instances, Models, Training Jobs
+- **Comprehend**: Document Classifiers, Entity Recognizers, Endpoints
+- **Forecast**: Datasets, Predictors, Forecast Exports
+- **Fraud Detector**: Detectors, Models, Outcomes
+- **Kendra**: Indexes, Data Sources
+- **Personalize**: Datasets, Solutions, Campaigns
+- **Polly**: Lexicons
+- **Rekognition**: Collections, Projects
+- **Textract**: N/A (API-based service)
+- **Transcribe**: Vocabularies, Jobs
+- **Translate**: Terminology, Translation Jobs
 
-The following **95+ additional services** are defined in the configuration and ready for handler implementation:
+### ✅ Application Integration (7 services)
+- **SNS**: Topics, Subscriptions
+- **SQS**: Queues (Standard & FIFO)
+- **Step Functions**: State Machines, Activities
+- **AppFlow**: Flows, Connector Profiles
+- **MQ**: Brokers, Configurations
+- **EventBridge**: Rules, Event Buses, Archives
+- **SWF**: Domains
 
-**Compute**: Batch, Lightsail, Elastic Beanstalk, App Runner, Outposts, Image Builder
+### ✅ Media Services (6 services)
+- **MediaConvert**: Jobs, Queues, Job Templates
+- **MediaLive**: Channels, Inputs
+- **MediaPackage**: Channels, Origin Endpoints
+- **MediaStore**: Containers
+- **MediaTailor**: Playback Configurations
+- **Elastic Transcoder**: Pipelines, Presets
+- **IVS**: Channels, Recording Configurations
 
-**Storage**: EFS, FSx, Glacier, Storage Gateway, Backup
+### ✅ IoT (4 services)
+- **IoT Core**: Things, Policies, Certificates, Thing Groups
+- **IoT Analytics**: Channels, Datasets, Pipelines, Datastores
+- **IoT Events**: Detector Models, Inputs
+- **IoT SiteWise**: Assets, Asset Models, Gateways
 
-**Database**: Neptune, DocumentDB, Keyspaces, Timestream, MemoryDB
+### ✅ Business Applications (6 services)
+- **Connect**: Instances
+- **Chime**: Meeting, Voice Connectors
+- **SES**: Identities, Configuration Sets, Receipt Rules
+- **WorkDocs**: Users (admin operations)
+- **WorkMail**: Organizations, Users
+- **Pinpoint**: Applications, Campaigns
 
-**Networking**: CloudFront, Direct Connect, App Mesh, Global Accelerator, Cloud Map
+### ✅ End User Computing & Migration (4 services)
+- **WorkSpaces**: WorkSpaces
+- **DataSync**: Tasks, Locations
+- **DMS**: Replication Instances, Endpoints, Tasks
+- **Transfer Family**: Servers, Users
 
-**Developer Tools**: CodeCommit, CodeBuild, CodeDeploy, CodePipeline, Cloud9, CloudShell, X-Ray, CodeArtifact
-
-**Analytics**: CloudSearch, QuickSight, Lake Formation, Kafka/MSK, EMR, Firehose, OpenSearch
-
-**Security**: Inspector, Macie, Cognito, Detective, CloudHSM, Directory Service, Firewall Manager, Security Hub, WAF, Shield, Signer
-
-**Machine Learning**: SageMaker, Comprehend, Forecast, Fraud Detector, Kendra, Personalize, Polly, Rekognition, Textract, Transcribe, Translate
-
-**Management**: Config, Service Catalog, Systems Manager, CloudTrail, License Manager, Organizations, OpsWorks
-
-**Application Integration**: Step Functions, AppFlow, MQ, EventBridge, SWF
-
-**Media Services**: MediaConvert, MediaLive, MediaPackage, MediaStore, MediaTailor, Elastic Transcoder, IVS
-
-**IoT**: IoT Core, IoT Analytics, IoT Events, IoT SiteWise
-
-**Business Apps**: Connect, Chime, SES, WorkDocs, WorkMail, Pinpoint
-
-**End User Computing**: WorkSpaces
-
-**Migration**: DataSync, DMS, Transfer Family
-
-And 40+ more services across various categories. See `aws_nuker/config.py` for the complete list.
+### ✅ Additional Services (1 service)
+- **STS**: Session Tokens (service-based, not deletable resources)
 
 ## 📦 Installation
 
@@ -205,38 +278,112 @@ Example IAM policy (⚠️ Very permissive - use with caution):
 
 ## 💻 Usage
 
-### Basic Commands
+### Quick Start
 
 ```bash
-# List available services
+# Install dependencies
+pip install -r requirements.txt
+
+# Install the package
+pip install -e .
+
+# List all available services (121 handlers)
 aws-nuker list-services
 
-# List available regions
+# List all available AWS regions
 aws-nuker list-regions
 
-# Dry run (see what would be deleted without deleting)
+# Dry run to preview deletions (ALWAYS TEST FIRST!)
 aws-nuker nuke --regions us-east-1 --services ec2 --dry-run
 
-# Delete EC2 resources in us-east-1
+# Delete specific service in one region
 aws-nuker nuke --regions us-east-1 --services ec2 --force
+```
 
-# Delete S3 and RDS in multiple regions
-aws-nuker nuke --regions us-east-1,us-west-2 --services s3,rds --force
+### Common Use Cases
 
-# Delete new container services
-aws-nuker nuke --regions us-east-1 --services ecr,ecs,eks --force
+**Clean up development/test account:**
+```bash
+# Preview everything that would be deleted
+aws-nuker nuke --regions us-east-1 --services "*" --dry-run
 
-# Delete analytics stack
-aws-nuker nuke --regions us-east-1 --services athena,glue,kinesis,redshift --force
+# Delete everything (use with extreme caution!)
+aws-nuker nuke --regions us-east-1 --services "*" --force --yes
+```
 
-# Delete security services
-aws-nuker nuke --regions us-east-1 --services kms,secretsmanager,guardduty --force
+**Remove compute resources:**
+```bash
+# EC2, ECS, EKS, Lambda, Batch
+aws-nuker nuke --regions us-east-1,us-west-2 --services ec2,ecs,eks,lambda,batch --force
+```
 
-# Delete all resources in all US regions (DANGEROUS!)
-aws-nuker nuke --regions "us-*" --services "*" --force --yes
+**Clean up databases:**
+```bash
+# RDS, DynamoDB, ElastiCache, Redshift, Neptune, DocumentDB
+aws-nuker nuke --regions us-east-1 --services rds,dynamodb,elasticache,redshift,neptune,docdb --force
+```
 
-# Delete all resources in specific regions with parallel execution
-aws-nuker nuke --regions us-east-1,us-west-2 --services "*" --force --parallel --max-workers 10
+**Remove storage resources:**
+```bash
+# S3, EFS, FSx, Glacier, Backup
+aws-nuker nuke --regions "*" --services s3 --force  # S3 is global
+aws-nuker nuke --regions us-east-1 --services efs,fsx,glacier,backup --force
+```
+
+**Clean up analytics & big data:**
+```bash
+# Athena, Glue, Kinesis, EMR, OpenSearch, QuickSight
+aws-nuker nuke --regions us-east-1 --services athena,glue,kinesis,emr,opensearch,quicksight --force
+```
+
+**Remove ML/AI services:**
+```bash
+# SageMaker, Comprehend, Rekognition, Kendra, Personalize
+aws-nuker nuke --regions us-east-1 --services sagemaker,comprehend,rekognition,kendra,personalize --force
+```
+
+**Clean up security resources:**
+```bash
+# IAM, KMS, Secrets Manager, GuardDuty, Macie, Security Hub
+aws-nuker nuke --regions us-east-1 --services iam,kms,secretsmanager,guardduty,macie,securityhub --force
+```
+
+**Remove networking:**
+```bash
+# VPC, ELB, CloudFront, API Gateway, Route53
+aws-nuker nuke --regions us-east-1 --services vpc,elb,apigateway,route53 --force
+aws-nuker nuke --regions "*" --services cloudfront --force  # CloudFront is global
+```
+
+**Clean up IoT resources:**
+```bash
+# IoT Core, IoT Analytics, IoT Events, IoT SiteWise
+aws-nuker nuke --regions us-east-1 --services iot,iotanalytics,iotevents,iotsitewise --force
+```
+
+**Remove media services:**
+```bash
+# MediaConvert, MediaLive, MediaPackage, IVS
+aws-nuker nuke --regions us-east-1 --services mediaconvert,medialive,mediapackage,ivs --force
+```
+
+### Advanced Usage
+
+```bash
+# Multi-region cleanup with wildcard
+aws-nuker nuke --regions "us-*" --services ec2,s3,rds --force
+
+# Parallel execution for faster cleanup
+aws-nuker nuke --regions us-east-1,us-west-2,eu-west-1 --services "*" --force --parallel --max-workers 10
+
+# Clean up specific service category with wildcard
+aws-nuker nuke --regions us-east-1 --services "media*" --force  # All media services
+
+# Tag-based filtering (if implemented)
+aws-nuker nuke --regions us-east-1 --services "*" --tags "Environment=dev,Project=test" --force
+
+# Exclude specific resources
+aws-nuker nuke --regions us-east-1 --services ec2 --exclude-tags "Protected=true" --force
 ```
 
 ### Command Options
@@ -329,37 +476,178 @@ AWS Nuker maintains detailed logs of all operations:
 ```
 aws-nuker/
 ├── aws_nuker/
-│   ├── __init__.py           # Package initialization
-│   ├── base_handler.py       # Base class for resource handlers
-│   ├── cli.py               # Command-line interface
-│   ├── config.py            # Configuration management
-│   ├── logger.py            # Logging and audit system
-│   ├── orchestrator.py      # Main execution orchestrator
-│   ├── registry.py          # Handler registry
-│   └── handlers/            # Service-specific handlers
+│   ├── __init__.py              # Package initialization
+│   ├── base_handler.py          # Base class for all resource handlers
+│   ├── cli.py                   # Command-line interface (Click-based)
+│   ├── config.py                # Configuration management
+│   ├── logger.py                # Logging and audit system
+│   ├── orchestrator.py          # Main execution orchestrator
+│   ├── registry.py              # Service handler registry (121 handlers)
+│   ├── approval_gate.py         # Approval workflow system
+│   ├── notification_manager.py  # Notification system
+│   ├── tag_manager.py           # Tag-based filtering
+│   ├── policy_templates.py      # IAM policy templates
+│   └── handlers/                # 121 Service-specific handlers
 │       ├── __init__.py
-│       ├── ec2_handler.py
-│       ├── s3_handler.py
-│       ├── rds_handler.py
-│       ├── lambda_handler.py
-│       ├── iam_handler.py
-│       ├── dynamodb_handler.py
+│       ├── acm_handler.py
+│       ├── apigateway_handler.py
+│       ├── appflow_handler.py
+│       ├── appmesh_handler.py
+│       ├── apprunner_handler.py
+│       ├── appstream_handler.py
+│       ├── athena_handler.py
+│       ├── autoscaling_handler.py
+│       ├── backup_handler.py
+│       ├── batch_handler.py
+│       ├── chime_handler.py
+│       ├── cloud9_handler.py
 │       ├── cloudformation_handler.py
+│       ├── cloudfront_handler.py
+│       ├── cloudhsm_handler.py
+│       ├── cloudmap_handler.py
+│       ├── cloudsearch_handler.py
+│       ├── cloudtrail_handler.py
+│       ├── cloudwatch_handler.py
+│       ├── codeartifact_handler.py
+│       ├── codebuild_handler.py
+│       ├── codecommit_handler.py
+│       ├── codedeploy_handler.py
+│       ├── codepipeline_handler.py
+│       ├── cognito_handler.py
+│       ├── comprehend_handler.py
+│       ├── config_handler.py
+│       ├── connect_handler.py
+│       ├── datasync_handler.py
+│       ├── detective_handler.py
+│       ├── directconnect_handler.py
+│       ├── dms_handler.py
+│       ├── docdb_handler.py
+│       ├── dynamodb_handler.py
+│       ├── ec2_handler.py
+│       ├── ecr_handler.py
 │       ├── ecs_handler.py
+│       ├── efs_handler.py
+│       ├── eks_handler.py
+│       ├── elasticache_handler.py
+│       ├── elasticbeanstalk_handler.py
+│       ├── elastictranscoder_handler.py
+│       ├── elb_handler.py
+│       ├── emr_handler.py
+│       ├── eventbridge_handler.py
+│       ├── firehose_handler.py
+│       ├── fms_handler.py
+│       ├── forecast_handler.py
+│       ├── frauddetector_handler.py
+│       ├── fsx_handler.py
+│       ├── glacier_handler.py
+│       ├── globalaccelerator_handler.py
+│       ├── glue_handler.py
+│       ├── guardduty_handler.py
+│       ├── iam_handler.py
+│       ├── imagebuilder_handler.py
+│       ├── inspector_handler.py
+│       ├── iot_handler.py
+│       ├── iotanalytics_handler.py
+│       ├── iotevents_handler.py
+│       ├── iotsitewise_handler.py
+│       ├── ivs_handler.py
+│       ├── kafka_handler.py
+│       ├── kendra_handler.py
+│       ├── keyspaces_handler.py
+│       ├── kinesis_handler.py
+│       ├── kms_handler.py
+│       ├── lakeformation_handler.py
+│       ├── lambda_handler.py
+│       ├── lightsail_handler.py
+│       ├── macie_handler.py
+│       ├── mediaconvert_handler.py
+│       ├── medialive_handler.py
+│       ├── mediapackage_handler.py
+│       ├── mediastore_handler.py
+│       ├── mediatailor_handler.py
+│       ├── memorydb_handler.py
+│       ├── mq_handler.py
+│       ├── neptune_handler.py
+│       ├── opensearch_handler.py
+│       ├── opsworks_handler.py
+│       ├── organizations_handler.py
+│       ├── outposts_handler.py
+│       ├── personalize_handler.py
+│       ├── pinpoint_handler.py
+│       ├── polly_handler.py
+│       ├── qldb_handler.py
+│       ├── quicksight_handler.py
+│       ├── ram_handler.py
+│       ├── rds_handler.py
+│       ├── redshift_handler.py
+│       ├── rekognition_handler.py
+│       ├── route53_handler.py
+│       ├── s3_handler.py
+│       ├── sagemaker_handler.py
+│       ├── secretsmanager_handler.py
+│       ├── securityhub_handler.py
+│       ├── serverlessrepo_handler.py
+│       ├── servicecatalog_handler.py
+│       ├── ses_handler.py
+│       ├── shield_handler.py
+│       ├── signer_handler.py
 │       ├── sns_handler.py
 │       ├── sqs_handler.py
-│       ├── cloudwatch_handler.py
-│       ├── apigateway_handler.py
-│       ├── elb_handler.py
-│       ├── route53_handler.py
-│       └── vpc_handler.py
-├── logs/                    # Log files (gitignored)
-├── audit/                   # Audit trail files (gitignored)
-├── requirements.txt         # Python dependencies
-├── setup.py                # Package setup
-├── main.py                 # Entry point
-├── README.md               # This file
-└── .gitignore             # Git ignore rules
+│       ├── ssm_handler.py
+│       ├── stepfunctions_handler.py
+│       ├── storagegateway_handler.py
+│       ├── sts_handler.py
+│       ├── swf_handler.py
+│       ├── textract_handler.py
+│       ├── timestream_handler.py
+│       ├── transcribe_handler.py
+│       ├── transfer_handler.py
+│       ├── translate_handler.py
+│       ├── vpc_handler.py
+│       ├── waf_handler.py
+│       ├── wafv2_handler.py
+│       ├── workdocs_handler.py
+│       ├── workmail_handler.py
+│       ├── workspaces_handler.py
+│       └── xray_handler.py
+├── api/
+│   ├── requirements.txt         # API dependencies
+│   └── server.py                # FastAPI REST backend
+├── ui/
+│   ├── package.json             # React UI dependencies
+│   ├── vite.config.ts           # Vite build config
+│   ├── tailwind.config.js       # Tailwind CSS config
+│   └── src/                     # React components
+│       ├── App.tsx
+│       ├── main.tsx
+│       └── components/
+│           ├── Dashboard.tsx
+│           ├── ResourceExplorer.tsx
+│           ├── DryRunPanel.tsx
+│           ├── ApprovalWorkflow.tsx
+│           ├── FilterBuilder.tsx
+│           ├── Notifications.tsx
+│           ├── Reports.tsx
+│           └── Settings.tsx
+├── docs/                        # Comprehensive documentation
+│   ├── API_DOCUMENTATION.md
+│   ├── EXAMPLES.md
+│   ├── INSTALLATION.md
+│   ├── TAG_BASED_CLEANUP.md
+│   ├── UI_DASHBOARD_GUIDE.md
+│   └── diagrams/
+│       └── ARCHITECTURE.md
+├── logs/                        # Runtime log files (gitignored)
+├── audit/                       # Audit trail files (gitignored)
+├── requirements.txt             # Python dependencies
+├── setup.py                     # Package setup
+├── main.py                      # CLI entry point
+├── README.md                    # This file
+├── TODO.md                      # Future enhancements roadmap
+├── CONTRIBUTING.md              # Contribution guidelines
+├── PROJECT_SUMMARY.md           # Project overview
+├── QUICK_REFERENCE.md           # Quick command reference
+└── .gitignore                   # Git ignore rules
 ```
 
 ### Component Diagram
@@ -518,14 +806,41 @@ The authors and contributors are not responsible for:
 
 ## 🗺️ Roadmap
 
-- [ ] Add support for more AWS services
-- [ ] Implement resource tagging for selective deletion
-- [ ] Add cost estimation before deletion
-- [ ] Create web UI for easier interaction
-- [ ] Add support for AWS Organizations
-- [ ] Implement rollback capabilities (where possible)
-- [ ] Add support for resource filters (by tags, creation date, etc.)
+See [TODO.md](TODO.md) for the comprehensive roadmap including:
+
+### Current Features ✅
+- 121 AWS service handlers fully implemented
+- Multi-region support with wildcards
+- Parallel execution
+- Comprehensive logging and audit trails
+- Tag-based resource management
+- Web UI dashboard
+- RESTful API
+
+### Planned Enhancements 🚀
+- Enhanced approval workflows with multi-stakeholder support
+- Advanced cost estimation before deletion
+- Resource dependency visualization
+- Rollback capabilities (where possible)
+- AWS Organizations support
+- Scheduled cleanup jobs
+- Terraform state integration
+- CloudFormation drift detection
+- Resource ownership tracking
+- Compliance reporting
+
+### Infrastructure & Scalability 🏗️
+- Distributed execution with SQS/SNS
+- Real-time WebSocket updates
+- Caching layer with Redis
+- Database backend for state management
+- Container orchestration support
+- Monitoring and alerting integration
+
+For detailed architecture plans and technical roadmap, see [TODO.md](TODO.md).
 
 ---
 
 **Remember: With great power comes great responsibility. Use AWS Nuker wisely! 💪**
+
+**Current Status: 121 service handlers implemented and production-ready! 🎉**
