@@ -13,6 +13,8 @@ from .tag_manager import TagManager, TagFilter
 from .policy_templates import PolicyTemplates, PolicyType
 from .approval_gate import ApprovalGate
 from .notification_manager import NotificationManager
+from .preflight import PreflightChecker, CheckStatus
+from .structured_logger import new_correlation_id
 
 # Initialize colorama
 init(autoreset=True)
@@ -81,7 +83,12 @@ def cli():
     default=False,
     help="Skip confirmation prompt.",
 )
-def nuke(regions, services, dry_run, force, parallel, max_workers, yes):
+@click.option(
+    "--preflight/--no-preflight",
+    default=True,
+    help="Run pre-flight checks before starting (default: enabled).",
+)
+def nuke(regions, services, dry_run, force, parallel, max_workers, yes, preflight):
     """Execute the AWS resource cleanup operation.
 
     This command will DELETE all non-default AWS resources in the specified
@@ -97,12 +104,39 @@ def nuke(regions, services, dry_run, force, parallel, max_workers, yes):
 
         # Nuclear option: Delete everything in all US regions
         aws-nuker nuke --regions "us-*" --services "*" --force --yes
+        
+        # Skip pre-flight checks
+        aws-nuker nuke --regions us-east-1 --services ec2 --no-preflight
     """
+    # Generate correlation ID for this operation
+    correlation_id = new_correlation_id()
+    
     logger = get_logger()
 
     # Parse configuration
     parsed_regions = NukerConfig.parse_regions(regions)
     parsed_services = NukerConfig.parse_services(services)
+    
+    # Run pre-flight checks if enabled
+    if preflight:
+        print(f"\n{Fore.CYAN}Running pre-flight checks...{Style.RESET_ALL}\n")
+        
+        checker = PreflightChecker(
+            regions=parsed_regions,
+            services=parsed_services,
+            dry_run=dry_run,
+        )
+        report = checker.run_all_checks()
+        
+        # Display pre-flight results
+        _display_preflight_results(report)
+        
+        if not report.passed:
+            print(f"\n{Fore.RED}Pre-flight checks failed. Cannot proceed.{Style.RESET_ALL}")
+            print(f"{Fore.YELLOW}Fix the issues above and try again.{Style.RESET_ALL}\n")
+            sys.exit(1)
+        
+        print(f"\n{Fore.GREEN}Pre-flight checks passed!{Style.RESET_ALL}\n")
 
     # Create configuration
     config = NukerConfig(
@@ -529,6 +563,104 @@ def nuke_by_tag(region, tag_key, tag_value, dry_run, yes):
     
     print(f"\n{Fore.RED}Tag-based deletion would proceed here{Style.RESET_ALL}")
     print(f"{Fore.YELLOW}Note: Full implementation requires orchestrator integration{Style.RESET_ALL}\n")
+
+
+def _display_preflight_results(report):
+    """Display pre-flight check results in a formatted table."""
+    check_data = []
+    
+    for check in report.checks:
+        if check.status == CheckStatus.PASSED:
+            status_icon = f"{Fore.GREEN}✓ PASSED{Style.RESET_ALL}"
+        elif check.status == CheckStatus.FAILED:
+            status_icon = f"{Fore.RED}✗ FAILED{Style.RESET_ALL}"
+        elif check.status == CheckStatus.WARNING:
+            status_icon = f"{Fore.YELLOW}⚠ WARNING{Style.RESET_ALL}"
+        else:
+            status_icon = f"{Fore.CYAN}○ SKIPPED{Style.RESET_ALL}"
+        
+        check_data.append([
+            check.name,
+            status_icon,
+            check.message[:50] + ("..." if len(check.message) > 50 else ""),
+            f"{check.duration_ms:.0f}ms",
+        ])
+    
+    print(tabulate(
+        check_data,
+        headers=["Check", "Status", "Message", "Duration"],
+        tablefmt="grid"
+    ))
+    
+    if report.account_id:
+        print(f"\n{Fore.CYAN}AWS Account:{Style.RESET_ALL} {report.account_id}")
+    if report.user_arn:
+        print(f"{Fore.CYAN}Identity:{Style.RESET_ALL} {report.user_arn}")
+    
+    print(f"{Fore.CYAN}Total Duration:{Style.RESET_ALL} {report.total_duration_ms:.0f}ms")
+    
+    if report.warnings:
+        print(f"\n{Fore.YELLOW}Warnings:{Style.RESET_ALL}")
+        for warning in report.warnings:
+            print(f"  ⚠ {warning}")
+    
+    if report.errors:
+        print(f"\n{Fore.RED}Errors:{Style.RESET_ALL}")
+        for error in report.errors:
+            print(f"  ✗ {error}")
+
+
+@cli.command()
+@click.option(
+    "--regions",
+    "-r",
+    default="us-east-1",
+    help="AWS regions to check (comma-separated)",
+)
+@click.option(
+    "--services",
+    "-s",
+    default="ec2,s3,lambda,rds",
+    help="AWS services to check permissions for",
+)
+def preflight(regions, services):
+    """Run pre-flight checks to validate AWS credentials and permissions.
+    
+    Validates:
+    - AWS credentials are valid and not expired
+    - Required permissions are available for target services
+    - Regions are accessible
+    - Services are available in target regions
+    
+    Examples:
+    
+        # Check credentials for EC2 in us-east-1
+        aws-nuker preflight --regions us-east-1 --services ec2
+        
+        # Full pre-flight check
+        aws-nuker preflight --regions us-east-1,us-west-2 --services ec2,s3,rds
+    """
+    print(f"\n{Fore.CYAN}Running pre-flight checks...{Style.RESET_ALL}\n")
+    
+    parsed_regions = NukerConfig.parse_regions(regions)
+    parsed_services = NukerConfig.parse_services(services)
+    
+    checker = PreflightChecker(
+        regions=parsed_regions,
+        services=parsed_services,
+    )
+    
+    report = checker.run_all_checks()
+    
+    _display_preflight_results(report)
+    
+    if report.passed:
+        print(f"\n{Fore.GREEN}All pre-flight checks passed!{Style.RESET_ALL}\n")
+        sys.exit(0)
+    else:
+        print(f"\n{Fore.RED}Some pre-flight checks failed.{Style.RESET_ALL}")
+        print(f"{Fore.YELLOW}Fix the issues above before running cleanup operations.{Style.RESET_ALL}\n")
+        sys.exit(1)
 
 
 def main():
